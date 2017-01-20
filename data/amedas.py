@@ -4,6 +4,7 @@ import re
 import json
 
 def scrape_amedas_html(url):
+    print "getting ...." + url
     html = requests.get(url).text
 
     iter = re.compile(r"amedas_link_html_entries\[(\d+)\] = '(.*?)';").finditer(html)
@@ -72,7 +73,23 @@ def get_wind_dir(point_table):
 if __name__ == '__main__':
     data = {}
 
-    url = "http://www.tenki.jp/amedas/1/3/"
-    scrape_amedas_html(url)
-    print json.dumps(data, ensure_ascii=False)
+    url_base = "http://www.tenki.jp/amedas/"
+    areas = [
+        "1/1", "1/3", "1/4",
+        "2/6", "2/7", "2/10",
+        "3/11", "3/15", "3/16", "3/23",
+        "4/18", "4/21",
+        "5/25", "5/27",
+        "6/31",
+        "7/35", "7/37",
+        "8/42",
+        "9/45", "9/47", "9/49",
+        "10/50"
+    ]
+
+    for area in areas:
+        scrape_amedas_html(url_base + area)
+
+    print len(data) + " points"
+    # print json.dumps(data, ensure_ascii=False)
 
