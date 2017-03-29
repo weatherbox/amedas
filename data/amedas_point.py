@@ -1,16 +1,27 @@
 # -*- coding: utf-8 -*-
 import csv
 import json
+import re
 
 def loadcsv(file):
-    with open(file, 'r', 'utf-8') as f:
+    with open(file, 'r') as f:
         reader = csv.reader(f)
         header = next(reader)
-        print header
 
         for row in reader:
-            print row
+            id = row[1]
+            type = row[2]
+            name = row[3]
+            if re.search('航空', row[5]):
+                type = 'airport'
+            lat = float(row[6]) + float(row[7]) / 60.
+            lon = float(row[8]) + float(row[9]) / 60.
+            print id, type, name, lat, lon
 
+            # 重複あり
+            # 官259( 気象台61(管区11) 航空79 特別95 )
+            # 四 699
+            # 雨 401
 
 if __name__ == '__main__':
     import sys
