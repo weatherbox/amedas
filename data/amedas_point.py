@@ -7,6 +7,7 @@ def loadcsv(file):
     # 重複あり
     # 官259( 気象台61(管区11) 航空79 特別95 )
     # 四 699
+    # 三 103
     # 雨 401
     amedas = {}
 
@@ -25,7 +26,7 @@ def loadcsv(file):
             elif type == '官':
                 type = 'observatory'
 
-            elif type == '四':
+            elif type == '四' or type == '三':
                 type = 'station'
 
             else:
