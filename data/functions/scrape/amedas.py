@@ -36,6 +36,24 @@ def main():
     
     to_dynamodb(data, time)
 
+    update_amedas_json(time)
+
+
+def update_amedas_json(time):
+    key = 'amedas.json'
+    file = '/tmp/' + key
+
+    data = {
+        'time': time,
+        'available': ['wind', 'temp', 'rain']
+    }
+
+    with open(file, 'w') as f:
+        json.dump(data, f)
+
+    s3_client.upload_file(file, 'amedas', key, ExtraArgs={ 'ContentType': 'application/json' })
+
+
 
 def to_json(elem, time, data):
     file = '/tmp/' + elem + '-' + time + '.json'
