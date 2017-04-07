@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
 import codecs
+from decimal import Decimal
 
 import scrape_amedas
 import amedas_point
@@ -26,17 +27,17 @@ def main():
     print "rain: %d" % len(rain)
     print "snow: %d" % len(snow)
     print "sunlight: %d" % len(sunlight)
-    #print json.dumps(sunlight, ensure_ascii=False)
 
     files = []
-    files.append(out_json("wind", time, wind))
-    files.append(out_json("temp", time, temp))
-    files.append(out_json("rain", time, rain))
-
+    files.append(to_json("wind", time, wind))
+    files.append(to_json("temp", time, temp))
+    files.append(to_json("rain", time, rain))
     upload_s3(files)
+    
+    to_dynamodb(data, time)
 
 
-def out_json(elem, time, data):
+def to_json(elem, time, data):
     file = '/tmp/' + elem + '-' + time + '.json'
 
     jsondata = {
@@ -78,6 +79,36 @@ def upload_s3(files):
         key = file[5:].replace('-', '/')
         print key
         s3_client.upload_file(file, 'amedas', key, ExtraArgs={ 'ContentType': 'application/json' })
+
+
+def to_dynamodb(data, time):
+    dynamodb = boto3.resource('dynamodb')
+    table = dynamodb.Table('amedas')
+
+    with table.batch_writer() as batch:
+        for id in data.keys():
+            item = data[id].copy()
+            item.pop('name')
+            item['id'] = id
+            item['time'] = time
+            item = {
+                'id':         id,
+                'time':       time,
+                'temp':       nDecimal(data[id]['temp']),
+                'rain':       nDecimal(data[id]['rain']),
+                'wind_speed': nDecimal(data[id]['wind_speed']),
+                'wind_dir':   data[id]['wind_dir'],
+                'sunlight':   data[id]['sunlight'],
+                'snow':       data[id]['snow'],
+            }
+            batch.put_item(Item=item)
+
+
+def nDecimal(x):
+    if x is None:
+        return None
+    else:
+        return Decimal(str(x))
 
 
 if __name__ == '__main__':
