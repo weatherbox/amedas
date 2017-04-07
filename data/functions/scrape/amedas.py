@@ -9,8 +9,13 @@ import amedas_point
 import boto3
 s3_client = boto3.client('s3')
 
+import logging
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
 
 def main():
+    logger.info('start scraping')
     data, time = scrape_amedas.scrape()
     point = amedas_point.loadcsv('ame_master.csv')
 
@@ -21,7 +26,7 @@ def main():
     snow = elem_json('snow', data, point)
     sunlight = elem_json('sunlight', data, point)
 
-    print time
+    logger.info(time)
     print "wind: %d" % len(wind)
     print "temp: %d" % len(temp)
     print "rain: %d" % len(rain)
@@ -51,6 +56,7 @@ def update_amedas_json(time):
     with open(file, 'w') as f:
         json.dump(data, f)
 
+    logger.info('update amedas.json')
     s3_client.upload_file(file, 'amedas', key, ExtraArgs={ 'ContentType': 'application/json' })
 
 
@@ -95,20 +101,17 @@ def elem_json(elem, data, point):
 def upload_s3(files):
     for file in files:
         key = file[5:].replace('-', '/')
-        print key
+        logger.info('upload: ' + key)
         s3_client.upload_file(file, 'amedas', key, ExtraArgs={ 'ContentType': 'application/json' })
 
 
 def to_dynamodb(data, time):
+    logger.info('save to DynamoDB')
     dynamodb = boto3.resource('dynamodb')
     table = dynamodb.Table('amedas')
 
     with table.batch_writer() as batch:
         for id in data.keys():
-            item = data[id].copy()
-            item.pop('name')
-            item['id'] = id
-            item['time'] = time
             item = {
                 'id':         id,
                 'time':       time,
@@ -127,6 +130,11 @@ def nDecimal(x):
         return None
     else:
         return Decimal(str(x))
+
+
+# called by aws lambda
+def handler(event, context):
+    main()
 
 
 if __name__ == '__main__':
