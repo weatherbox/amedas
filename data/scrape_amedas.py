@@ -20,7 +20,6 @@ def scrape():
         "9/45", "9/47", "9/49",
         "10/50"
     ]
-    """
 
     for area in areas:
         time = scrape_amedas_html(url_base + area, data)
