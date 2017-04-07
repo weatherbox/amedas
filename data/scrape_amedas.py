@@ -20,24 +20,30 @@ def scrape():
         "9/45", "9/47", "9/49",
         "10/50"
     ]
+    """
 
     for area in areas:
-        scrape_amedas_html(url_base + area, data)
+        time = scrape_amedas_html(url_base + area, data)
 
-    return data
+    return data, time
 
 
 def scrape_amedas_html(url, data):
     print "getting ...." + url
     html = requests.get(url).text
 
+    time = re.search(r'id="amedas_announce_datetime">(.*?)</div>', html)
+    time_str = time.group(1)
+    time = time_str[0:4] + time_str[5:7] + time_str[8:10] + time_str[12:14] + time_str[15:17]
+
     iter = re.compile(r"amedas_link_html_entries\[(\d+)\] = '(.*?)';").finditer(html)
 
     for match in iter:
-        point_id = match.group(1)
+        point_id = str(match.group(1))
         point_table = match.group(2)
         data[point_id] = scrape_amedas_table(point_table)
 
+    return time
 
 def scrape_amedas_table(point_table):
     return {
@@ -95,8 +101,9 @@ def get_wind_dir(point_table):
         return None
 
 if __name__ == '__main__':
-    data = scrape()
+    data, time = scrape()
 
+    print time
     print str(len(data)) + " points"
     print json.dumps(data, ensure_ascii=False)
 
