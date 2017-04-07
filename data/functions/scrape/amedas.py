@@ -78,7 +78,7 @@ def upload_s3(files):
     for file in files:
         key = file[5:].replace('-', '/')
         print key
-        s3_client.upload_file(file, 'amedas', key)
+        s3_client.upload_file(file, 'amedas', key, ExtraArgs={ 'ContentType': 'application/json' })
 
 
 if __name__ == '__main__':
