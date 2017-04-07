@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import json
-import copy
 import codecs
 
 import scrape_amedas
@@ -31,8 +30,8 @@ def main():
 
     files = []
     files.append(out_json("wind", time, wind))
-    files.append(out_json("temp", time, wind))
-    files.append(out_json("rain", time, wind))
+    files.append(out_json("temp", time, temp))
+    files.append(out_json("rain", time, rain))
 
     upload_s3(files)
 
@@ -56,7 +55,7 @@ def wind_json(data, point):
 
     for id in data.keys():
         if data[id]['wind_speed'] is not None:
-            wind[id] = copy.deepcopy(point[id])
+            wind[id] = point[id].copy()
             wind[id]['speed'] = data[id]['wind_speed']
             wind[id]['dir'] = data[id]['wind_dir']
 
@@ -68,7 +67,7 @@ def elem_json(elem, data, point):
 
     for id in data.keys():
         if data[id][elem] is not None:
-            elems[id] = copy.deepcopy(point[id])
+            elems[id] = point[id].copy()
             elems[id][elem] = data[id][elem]
 
     return elems
