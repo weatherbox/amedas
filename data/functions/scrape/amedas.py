@@ -6,6 +6,9 @@ import codecs
 import scrape_amedas
 import amedas_point
 
+import boto3
+s3_client = boto3.client('s3')
+
 
 def main():
     data, time = scrape_amedas.scrape()
@@ -24,16 +27,18 @@ def main():
     print "rain: %d" % len(rain)
     print "snow: %d" % len(snow)
     print "sunlight: %d" % len(sunlight)
-
-    out_json("wind", time, wind)
-    out_json("temp", time, wind)
-    out_json("rain", time, wind)
-
     #print json.dumps(sunlight, ensure_ascii=False)
+
+    files = []
+    files.append(out_json("wind", time, wind))
+    files.append(out_json("temp", time, wind))
+    files.append(out_json("rain", time, wind))
+
+    upload_s3(files)
 
 
 def out_json(elem, time, data):
-    file = elem + '-' + time + '.json'
+    file = '/tmp/' + elem + '-' + time + '.json'
 
     jsondata = {
         'time': time,
@@ -42,6 +47,9 @@ def out_json(elem, time, data):
 
     with codecs.open(file, 'w', 'utf-8') as f:
         json.dump(jsondata, f, ensure_ascii=False)
+
+    return file
+
 
 def wind_json(data, point):
     wind = {}
@@ -64,6 +72,13 @@ def elem_json(elem, data, point):
             elems[id][elem] = data[id][elem]
 
     return elems
+
+
+def upload_s3(files):
+    for file in files:
+        key = file[5:].replace('-', '/')
+        print key
+        s3_client.upload_file(file, 'amedas', key)
 
 
 if __name__ == '__main__':
