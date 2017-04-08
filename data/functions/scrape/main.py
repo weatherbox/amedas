@@ -16,15 +16,10 @@ logger.setLevel(logging.INFO)
 
 def main():
     logger.info('start scraping')
-    data, time = scrape_amedas.scrape()
+    data, time = scrape_amedas.scrape(check_time())
     point = amedas_point.loadcsv('ame_master.csv')
 
-    if data is None:
-        return
-
-    if check_time() == time:
-        logger.info('already updated')
-        return
+    if data is None: return
 
     wind = wind_json(data, point)
 

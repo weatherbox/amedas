@@ -4,7 +4,7 @@ import re
 import json
 
 
-def scrape():
+def scrape(check_time):
     data = {}
 
     url_base = "http://www.tenki.jp/amedas/"
@@ -26,8 +26,12 @@ def scrape():
         time1 = scrape_amedas_html(url_base + area, data)
 
         # check time
+        if time1 == check_time:
+            print "already updated"
+            return None, check_time
+
         if time:
-            if time != time1:
+            if time1 != time:
                 print "time differs"
                 return None, time
 
