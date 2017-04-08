@@ -31,10 +31,23 @@ L.Amedas = L.Layer.extend({
 
 	_loadJSON: function (url){
 		var self = this;
-		$.getJSON(url, function (data) {
+		this._getJSON(url, function (data) {
 			console.log(data);
 			this.data = data;
-		});	
+		});
+	},
+
+	// substitute $.getJSON
+	_getJSON: function (url, callback){
+		var xhr = new XMLHttpRequest();
+		xhr.onreadystatechange = function() {
+			if ((xhr.readyState === 4) && (xhr.status === 200)) {
+				var data = JSON.parse(xhr.responseText);
+				callback(data);
+			}
+		}
+		xhr.open("GET", url, true);
+		xhr.send(null);	
 	},
 
 	_update: function (){
