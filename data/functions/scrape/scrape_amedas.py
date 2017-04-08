@@ -21,19 +21,29 @@ def scrape():
         "10/50"
     ]
 
+    time = None
     for area in areas:
-        time = scrape_amedas_html(url_base + area, data)
+        time1 = scrape_amedas_html(url_base + area, data)
+
+        # check time
+        if time:
+            if time != time1:
+                print "time differs"
+                return None, time
+
+        else:
+            time = time1
 
     return data, time
 
 
 def scrape_amedas_html(url, data):
-    print "getting ...." + url
     html = requests.get(url).text
 
     time = re.search(r'id="amedas_announce_datetime">(.*?)</div>', html)
     time_str = time.group(1)
     time = time_str[0:4] + time_str[5:7] + time_str[8:10] + time_str[12:14] + time_str[15:17]
+    print "get...." + url + " (" + time + ")"
 
     iter = re.compile(r"amedas_link_html_entries\[(\d+)\] = '(.*?)';").finditer(html)
 

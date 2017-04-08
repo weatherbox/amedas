@@ -19,6 +19,13 @@ def main():
     data, time = scrape_amedas.scrape()
     point = amedas_point.loadcsv('ame_master.csv')
 
+    if data is None:
+        return
+
+    if check_time() == time:
+        logger.info('already updated')
+        return
+
     wind = wind_json(data, point)
 
     temp = elem_json('temp', data, point)
@@ -42,6 +49,16 @@ def main():
     to_dynamodb(data, time)
 
     update_amedas_json(time)
+
+
+
+def check_time():
+    file = '/tmp/amedas-current.json'
+    s3_client.download_file('amedas', 'amedas.json', file)
+
+    with open(file, 'r') as f:
+        data = json.load(f)
+        return data['time']
 
 
 def update_amedas_json(time):
