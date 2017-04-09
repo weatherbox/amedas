@@ -23,7 +23,7 @@ def scrape(check_time):
 
     time = None
     for area in areas:
-        time1 = scrape_amedas_html(url_base + area, data)
+        time1 = scrape_amedas_html(url_base + area + "/precip.html", data)
 
         # check time
         if time1 == check_time:
