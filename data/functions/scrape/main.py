@@ -91,7 +91,7 @@ def wind_json(data, point):
     wind = {}
 
     for id in data.keys():
-        if data[id]['wind_speed'] is not None:
+        if data[id]['wind_speed'] is not None and id in point:
             wind[id] = point[id].copy()
             wind[id]['speed'] = data[id]['wind_speed']
             wind[id]['dir'] = data[id]['wind_dir']
@@ -103,7 +103,7 @@ def elem_json(elem, data, point):
     elems = {}
 
     for id in data.keys():
-        if data[id][elem] is not None:
+        if data[id][elem] is not None and id in point:
             elems[id] = point[id].copy()
             elems[id][elem] = data[id][elem]
 
