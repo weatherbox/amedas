@@ -1,6 +1,7 @@
 /* global window */
 import React, {Component} from 'react';
-import DeckGL, {HexagonLayer} from 'deck.gl';
+import DeckGL from 'deck.gl';
+import GridPointLayer from './grid-point-layer.js';
 
 const LIGHT_SETTINGS = {
   lightsPosition: [-0.144528, 49.739968, 8000, -3.807751, 54.104682, 8000],
@@ -110,7 +111,7 @@ export default class DeckGLOverlay extends Component {
     }
 
     const layers = [
-      new HexagonLayer({
+      new GridPointLayer({
         id: 'heatmap',
         colorRange,
         coverage,
