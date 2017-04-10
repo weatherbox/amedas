@@ -1,6 +1,6 @@
 /* global window */
 import DeckGL, {GridLayer} from 'deck.gl';
-import {pointToDensityGridData} from './grid-aggregator';
+import {pointToGridData} from './grid-aggregator';
 
 function _needsReProjectPoints(oldProps, props) {
   return oldProps.cellSize !== props.cellSize;
@@ -13,7 +13,7 @@ export default class GridPointLayer extends GridLayer {
       const {data, cellSize, getPosition} = this.props;
 
       const {layerData, countRange} =
-        pointToDensityGridData(data, cellSize, getPosition);
+        pointToGridData(data, cellSize, getPosition);
 
       Object.assign(this.state, {layerData, countRange});
     }

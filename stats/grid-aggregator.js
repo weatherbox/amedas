@@ -27,7 +27,7 @@ const R_EARTH = 6378000;
  * @param {function} getPosition - position accessor
  * @returns {object} - grid data, cell dimension and count range
  */
-export function pointToDensityGridData(points, cellSize, getPosition) {
+export function pointToGridData(points, cellSize, getPosition) {
 
   const {gridHash, gridOffset} = _pointsToGridHashing(points, cellSize, getPosition);
   const layerData = _getGridLayerDataFromGridHash(gridHash, gridOffset);
@@ -61,14 +61,15 @@ function _pointsToGridHashing(points, cellSize, getPosition) {
   if (gridOffset.xOffset <= 0 || gridOffset.yOffset <= 0) {
     return {gridHash: {}, gridOffset};
   }
-  // calculate count per cell
+
+  // calculate sum of value per cell
   const gridHash = points.reduce((accu, pt) => {
-    const latIdx = Math.floor((getPosition(pt)[1] + 90) / gridOffset.yOffset);
-    const lonIdx = Math.floor((getPosition(pt)[0] + 180) / gridOffset.xOffset);
+    const latIdx = Math.floor((pt[2] + 90) / gridOffset.yOffset);
+    const lonIdx = Math.floor((pt[3] + 180) / gridOffset.xOffset);
     const key = `${latIdx}-${lonIdx}`;
 
     accu[key] = accu[key] || {count: 0, points: []};
-    accu[key].count += 1;
+    accu[key].count += pt[1];
     accu[key].points.push(pt);
 
     return accu;
