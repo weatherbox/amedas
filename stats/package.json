@@ -13,7 +13,8 @@
     "mapbox-gl": "^0.35.0",
     "react": "^15.4.1",
     "react-dom": "^15.4.1",
-    "react-map-gl": "^2.0.0"
+    "react-map-gl": "^2.0.0",
+    "semantic-ui-react": "^0.67.2"
   },
   "devDependencies": {
     "buble-loader": "^0.4.0",
