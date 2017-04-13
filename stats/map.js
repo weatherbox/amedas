@@ -39,14 +39,18 @@ export default class Map extends Component {
     requestJSON('amedas-point.json', (error, res) => {
       if (!error) {
         let point = res;
-        this._loadCSV('pre24h00_rct.csv', point);
+        this.state.point = point;
+        this._loadCSV(this.props.url);
       }
     });
   }
 
-  _loadCSV(url, point) {
+  _loadCSV(url) {
     let time;
+    let point = this.state.point;
+
     request(url, (xhr) => {
+      if (!point) return;
       let data = csvParseRows(xhr.responseText, (d, i) => {
         if (i == 0) return null; // header
         if (i == 1) time = d.slice(4, 9);
@@ -59,7 +63,7 @@ export default class Map extends Component {
           point[id].lon
         ];
       });
-      this.setState({ time, data });
+      this.setState({ url, time, data });
     });
   } 
 
@@ -116,6 +120,10 @@ export default class Map extends Component {
 
   render() {
     const {viewport, data} = this.state;
+
+    if (this.state.url != this.props.url){
+      this._loadCSV(this.props.url);
+    }
 
     return (
       <MapGL

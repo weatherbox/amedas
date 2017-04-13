@@ -12,7 +12,9 @@ const styles = {
     color: '#fff',
     zIndex: 1000,
     fontSize: '3rem',
-    fontWeight: '200'
+    fontWeight: '200',
+    width: 50,
+    textAlign: 'center'
   },
   title2: {
     position: 'absolute',
@@ -49,19 +51,34 @@ const styles = {
 };
 
 class Root extends Component {
-  render() {
+  constructor(props) {
+    super(props);
+    this.state = {
+      hour: 24,
+      url: this.geturl(24)
+    };
+  }
 
+  onclick(hour) {
+    this.setState({ hour, url: this.geturl(hour) });
+  }
+
+  geturl(hour) {
+    return 'pre' + hour + 'h00_rct.csv';
+  }
+
+  render() {
     return (
       <div>
-        <Header as='h1' style={styles.title1}>24</Header>
+        <Header as='h1' style={styles.title1}>{this.state.hour}</Header>
         <Header as='h3' style={styles.title2}>時間降水量</Header>
-        <Map />
+        <Map url={this.state.url}/>
         <Button.Group size='tiny' color='black' style={styles.buttongroup}>
-          <Button style={styles.button}>1h</Button>
-          <Button style={styles.button}>3h</Button>
-          <Button style={styles.button}>24h</Button>
-          <Button style={styles.button}>48h</Button>
-          <Button style={styles.button}>72h</Button>
+          <Button style={styles.button} onClick={() => {this.onclick(1)}}>1h</Button>
+          <Button style={styles.button} onClick={() => {this.onclick(3)}}>3h</Button>
+          <Button style={styles.button} onClick={() => {this.onclick(24)}}>24h</Button>
+          <Button style={styles.button} onClick={() => {this.onclick(48)}}>48h</Button>
+          <Button style={styles.button} onClick={() => {this.onclick(72)}}>72h</Button>
         </Button.Group>
         <Popup
           trigger={<Icon name='info circle' style={styles.infoIcon}/>}
@@ -72,6 +89,7 @@ class Root extends Component {
           </div>}
           style={styles.popup}
           on='click'
+          basic
           inverted
         />
       </div>
