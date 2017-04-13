@@ -40,7 +40,7 @@ class Root extends Component {
 
         let id = d[0];
         return [
-          id,
+          point[id].name,
           +d[9], // value
           point[id].lat,
           point[id].lon
@@ -68,6 +68,28 @@ class Root extends Component {
     });
   }
 
+  _onHover({x, y, object}) {
+    this.setState({x, y, hoveredObject: object});
+  }
+
+  _renderTooltip() {
+    const {x, y, hoveredObject} = this.state;
+
+    if (!hoveredObject) {
+      return null;
+    }
+    const name = hoveredObject.points[0][0];
+    const count = hoveredObject.count;
+
+    return (
+      <div className="tooltip"
+           style={{left: x, top: y}}>
+        <div>{`${name}`}</div>
+        <div>{`${count.toFixed(1)} mm`}</div>
+      </div>
+    );
+  }
+
   render() {
     const {viewport, data} = this.state;
 
@@ -78,10 +100,14 @@ class Root extends Component {
         perspectiveEnabled={true}
         onChangeViewport={this._onChangeViewport.bind(this)}
         mapboxApiAccessToken={MAPBOX_TOKEN}>
-        <DeckGLOverlay
-          viewport={viewport}
-          data={data || []}
-        />
+        <div>
+          {this._renderTooltip()}
+          <DeckGLOverlay
+            viewport={viewport}
+            data={data || []}
+            onHover={this._onHover.bind(this)}
+          />
+        </div>
       </MapGL>
     );
   }
