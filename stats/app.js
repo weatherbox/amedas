@@ -85,6 +85,8 @@ class Root extends Component {
           content={<div>
             <a href='http://www.data.jma.go.jp/obd/stats/data/mdrr/docs/csv_dl_readme.html' style={{color:"#fff"}}>最新の気象データCSV</a> <a href='http://www.data.jma.go.jp/'>©気象庁</a>
             <br/><br/>
+            visualized with <a href='http://uber.github.io/deck.gl/'>deck.gl</a>
+            <br/>
             <a href='https://www.mapbox.com/about/maps/'>©Mapbox</a> <a href='http://www.openstreetmap.org/about/'>©OpenStreetMap</a>
           </div>}
           style={styles.popup}
