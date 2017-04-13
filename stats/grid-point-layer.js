@@ -1,7 +1,6 @@
 /* global window */
 import DeckGL, {GridLayer} from 'deck.gl';
 import {pointToGridData} from './grid-aggregator';
-import {quantizeScale} from './node_modules/deck.gl/src/utils/scale-utils';
 
 function _needsReProjectPoints(oldProps, props) {
   return oldProps.cellSize !== props.cellSize;

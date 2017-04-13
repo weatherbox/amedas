@@ -65,7 +65,11 @@ class Root extends Component {
   }
 
   geturl(hour) {
-    return 'pre' + hour + 'h00_rct.csv';
+    if (window.location.hash == '#201704111500'){
+      return 'data/pre' + hour + 'h00_201704111500.csv';
+    }else{
+      return 'pre' + hour + 'h00_rct.csv';
+    }
   }
 
   getmax(hour) {
