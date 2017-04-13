@@ -21,12 +21,16 @@ export default class GridPointLayer extends GridLayer {
   }
 
   _onGetSublayerColor(cell) {
-    const {colorRange} = this.props;
+    const {colorRange, max} = this.props;
     const colorDomain = this.props.colorDomain || this.state.countRange;
 
     if (cell.count == 0) return [55, 55, 66];
 
-    return quantizeScale(colorDomain, colorRange, cell.count);
+    const step = max / colorRange.length;
+    const idx = Math.floor(cell.count / step);
+    const clampIdx = Math.max(Math.min(idx, colorRange.length - 1), 0);
+
+    return colorRange[clampIdx];
   }
 };
 

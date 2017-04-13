@@ -119,9 +119,10 @@ export default class Map extends Component {
   }
 
   render() {
-    const {viewport, data} = this.state;
+    let {viewport, data} = this.state;
 
     if (this.state.url != this.props.url){
+      data = [];
       this._loadCSV(this.props.url);
     }
 
@@ -138,6 +139,7 @@ export default class Map extends Component {
           <DeckGLOverlay
             viewport={viewport}
             data={data || []}
+            max={this.props.max}
             onHover={this._onHover.bind(this)}
           />
         </div>

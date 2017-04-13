@@ -55,16 +55,22 @@ class Root extends Component {
     super(props);
     this.state = {
       hour: 24,
-      url: this.geturl(24)
+      url: this.geturl(24),
+      max: this.getmax(24)
     };
   }
 
   onclick(hour) {
-    this.setState({ hour, url: this.geturl(hour) });
+    this.setState({ hour, url: this.geturl(hour), max: this.getmax(hour) });
   }
 
   geturl(hour) {
     return 'pre' + hour + 'h00_rct.csv';
+  }
+
+  getmax(hour) {
+    const values = { 1: 50, 3: 100, 24: 300, 48: 400, 72: 600 };
+    return values[hour];
   }
 
   render() {
@@ -72,7 +78,10 @@ class Root extends Component {
       <div>
         <Header as='h1' style={styles.title1}>{this.state.hour}</Header>
         <Header as='h3' style={styles.title2}>時間降水量</Header>
-        <Map url={this.state.url}/>
+        <Map
+          url={this.state.url}
+          max={this.state.max}
+        />
         <Button.Group size='tiny' color='black' style={styles.buttongroup}>
           <Button style={styles.button} onClick={() => {this.onclick(1)}}>1h</Button>
           <Button style={styles.button} onClick={() => {this.onclick(3)}}>3h</Button>
