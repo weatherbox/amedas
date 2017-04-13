@@ -50,7 +50,7 @@ export function pointToGridData(points, cellSize, getPosition) {
 function _pointsToGridHashing(points, cellSize, getPosition) {
 
   // find the geometric center of sample points
-  const allLat = points.map(p => getPosition(p)[1]);
+  const allLat = points.map(p => p[2]);
   const latMin = Math.min.apply(null, allLat);
   const latMax = Math.max.apply(null, allLat);
 
