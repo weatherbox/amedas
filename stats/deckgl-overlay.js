@@ -113,6 +113,7 @@ export default class DeckGLOverlay extends Component {
     const layers = [
       new GridPointLayer({
         id: 'heatmap',
+        cellSize: 4000,
         colorRange,
         coverage,
         data,

@@ -46,9 +46,7 @@ class Root extends Component {
           point[id].lon
         ];
       });
-      console.log(time);
-      console.table(data);
-      //this.setState({data});
+      this.setState({ time, data });
     });
   } 
 
