@@ -4,9 +4,9 @@ import DeckGL from 'deck.gl';
 import GridPointLayer from './grid-point-layer.js';
 
 const LIGHT_SETTINGS = {
-  lightsPosition: [-0.144528, 49.739968, 8000, -3.807751, 54.104682, 8000],
+  lightsPosition: [150, 20.5, 8000, 120, 50, 8000],
   ambientRatio: 0.4,
-  diffuseRatio: 0.6,
+  diffuseRatio: 0.4,
   specularRatio: 0.2,
   lightsStrength: [0.8, 0.0, 0.8, 0.0],
   numberOfLights: 2
