@@ -1,7 +1,7 @@
 /* global window,document */
 import React, {Component} from 'react';
 import {render} from 'react-dom';
-import { Header, Button } from 'semantic-ui-react';
+import { Header, Button, Popup, Icon } from 'semantic-ui-react';
 import Map from './map.js';
 
 const styles = {
@@ -32,6 +32,19 @@ const styles = {
   button: {
     color: "#fff",
     backgroundColor: "rgba(0, 0,0, 0.8)" 
+  },
+  infoIcon: {
+    position: 'absolute',
+    bottom: 15,
+    right: 15,
+    color: '#fff',
+    zIndex: 1000,
+  },
+  popup: {
+    borderRadius: 0,
+    background: '#000',
+    opacity: 0.8,
+    padding: '1.5em'
   }
 };
 
@@ -50,6 +63,17 @@ class Root extends Component {
           <Button style={styles.button}>48h</Button>
           <Button style={styles.button}>72h</Button>
         </Button.Group>
+        <Popup
+          trigger={<Icon name='info circle' style={styles.infoIcon}/>}
+          content={<div>
+            <a href='http://www.data.jma.go.jp/obd/stats/data/mdrr/docs/csv_dl_readme.html' style={{color:"#fff"}}>最新の気象データCSV</a> <a href='http://www.data.jma.go.jp/'>©気象庁</a>
+            <br/><br/>
+            <a href='https://www.mapbox.com/about/maps/'>©Mapbox</a> <a href='http://www.openstreetmap.org/about/'>©OpenStreetMap</a>
+          </div>}
+          style={styles.popup}
+          on='click'
+          inverted
+        />
       </div>
     );
   }
