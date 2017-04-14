@@ -68,7 +68,7 @@ class Root extends Component {
     if (window.location.hash == '#201704111500'){
       return 'data/pre' + hour + 'h00_201704111500.csv';
     }else{
-      return 'pre' + hour + 'h00_rct.csv';
+      return 'https://y8cbu5qafb.execute-api.ap-northeast-1.amazonaws.com/dev/pre' + hour + 'h-rct';
     }
   }
 

@@ -49,22 +49,23 @@ export default class Map extends Component {
     let time;
     let point = this.state.point;
 
-    request(url, (xhr) => {
-      if (!point) return;
-      let data = csvParseRows(xhr.responseText, (d, i) => {
-        if (i == 0) return null; // header
-        if (i == 1) time = d.slice(4, 9);
+    request(url)
+      .get((xhr) => {
+        if (!point) return;
+        let data = csvParseRows(xhr.responseText, (d, i) => {
+          if (i == 0) return null; // header
+          if (i == 1) time = d.slice(4, 9);
 
-        let id = d[0];
-        return [
-          point[id].name,
-          +d[9], // value
-          point[id].lat,
-          point[id].lon
-        ];
+          let id = d[0];
+          return [
+            point[id].name,
+            +d[9], // value
+            point[id].lat,
+            point[id].lon
+          ];
+        });
+        this.setState({ url, time, data });
       });
-      this.setState({ url, time, data });
-    });
   } 
 
   componentDidMount() {
