@@ -36,7 +36,7 @@ export default class Map extends Component {
       data: null
     };
 
-    requestJSON('amedas-point.json', (error, res) => {
+    requestJSON('../point/amedas-point.json', (error, res) => {
       if (!error) {
         let point = res;
         this.state.point = point;
