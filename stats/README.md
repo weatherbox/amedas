@@ -6,7 +6,7 @@ https://weatherbox.github.io/amedas/stats/#201704111500
 
 
 ### deck.gl
-visualized with deck.gl  
+visualized with deck.gl
 https://github.com/uber/deck.gl/tree/4.0-release/examples/3d-heatmap
 
 
