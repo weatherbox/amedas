@@ -13,7 +13,6 @@ L.Amedas = L.Layer.extend({
 
 	initialize: function (url, options){
 		L.setOptions(this, options);
-		this._markers = [];
 
 		if (!url){
 			var self = this;
@@ -83,7 +82,7 @@ L.Amedas = L.Layer.extend({
 					forceDir: true
 				});
 				var marker = L.marker([point.lat, point.lon], {icon: icon});
-				marker.bindPopup(point.name + point.dir + point.speed);
+				marker.bindPopup(point.name + '<br>' + point.dir + ' ' + point.speed + 'm/s');
 				marker.addTo(this.map);
 				this._markers.push(marker);
 			}
