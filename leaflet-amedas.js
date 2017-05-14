@@ -34,6 +34,14 @@ L.Amedas = L.Layer.extend({
 	onRemove: function (){
 	},
 
+	getEvents: function (){
+		return {
+			viewreset: this._update,
+			moveend:   this._update,
+			zoom:      this._update,
+		};
+	},
+
 	_loadAmedasJSON: function (callback){
 		var url = "//s3-ap-northeast-1.amazonaws.com/amedas/amedas.json";
 		this._getJSON(url, function (data){
@@ -47,7 +55,7 @@ L.Amedas = L.Layer.extend({
 		this._getJSON(url, function (data){
 			console.log(data);
 			self.data = data;
-			self._update();
+			self._init();
 		});
 	},
 
@@ -70,26 +78,75 @@ L.Amedas = L.Layer.extend({
 		xhr.send(null);	
 	},
 
-	_update: function (){
+	_init: function (){
+		this._defaultMarkers = L.featureGroup();
+
 		for (id in this.data.data){
 			var point = this.data.data[id];
 
 			if (point.type == "observatory"){
-				var icon = L.WindBarb.icon({
-					deg: this._degrees[point.dir],
-					speed: point.speed * 2,
-					pointRadius: 4,
-					forceDir: true
-				});
-				var marker = L.marker([point.lat, point.lon], {icon: icon});
-				marker.bindPopup(point.name + '<br>' + point.dir + ' ' + point.speed + 'm/s');
-				marker.addTo(this.map);
-				this._markers.push(marker);
+				var marker = this._createMarker(point);
+				this._defaultMarkers.addLayer(marker);
 			}
 		}
-		console.log(this._markers.length);
+
+		this._defaultMarkers.addTo(this.map);
+		console.log("default", this._defaultMarkers.getLayers().length);
+
+		// upscaled markers
+		this._upscaledMarkers = L.featureGroup();
+		this._showUpscaled = false;
 	},
 
+	_update: function (){
+		var zoom = this._map.getZoom(),
+			bounds = this._map.getBounds();
+
+		if (zoom > 7){
+			for (id in this.data.data){
+				var point = this.data.data[id];
+
+				if (point.type != "observatory"){
+					var contains = bounds.contains([point.lat, point.lon]);
+					if (!point.show && contains){ 
+						point.show = true;
+						var marker = this._createMarker(point);
+						this._upscaledMarkers.addLayer(marker);
+						point.layerId = this._upscaledMarkers.getLayerId(marker);
+
+					}else if (point.show && !contains){
+						point.show = false;
+						this._upscaledMarkers.removeLayer(point.layerId);
+					}
+				}
+			}
+
+			if (!this._showUpscaled){
+				this._showUpscaled = true;
+				this._upscaledMarkers.addTo(this.map);
+			}
+
+		}else{
+			if (this._showUpscaled){
+				this._showUpscaled = false;
+				this._upscaledMarkers.remove();
+			}
+		}
+
+		console.log("upscaled:", this._upscaledMarkers.getLayers().length);
+	},
+
+	_createMarker: function (point){
+		var icon = L.WindBarb.icon({
+			deg: this._degrees[point.dir],
+			speed: point.speed * 2,
+			pointRadius: 4,
+			forceDir: true
+		});
+		var marker = L.marker([point.lat, point.lon], {icon: icon});
+		//marker.bindPopup(point.name + '<br>' + point.dir + ' ' + point.speed + 'm/s');
+		return marker;
+	},
 
 	_degrees: {
 		N: 0,   NNE: 22.5,  NE: 45,  ENE: 67.5,
