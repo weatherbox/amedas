@@ -1,0 +1,4 @@
+*.pyc
+*/env/*
+data/functions/*/*/*
+*/node_modules/*

@@ -9,10 +9,17 @@
 	<style>
 		body { margin:0; padding:0; }
 		#map { position:absolute; top:0; bottom:0; width:100%; z-index:1; cursor:default; background:#202020; }
+		#app { position:absolute; bottom:10px; left:10px; z-index:10; color:#fff; font-size:16px; }
+		#app div { position:relative; display:inline-block; padding-right:12px; } 
 	</style>
 </head>
 <body>
 	<div id='map'></div>
+
+	<div id='app'>
+		<div>Amedas</div><div>Wind</div>
+		<div id='time'></div>
+	</div>
 
 	<script src="//unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
 	<script src="lib/leaflet-windbarb.js"></script>
@@ -31,8 +38,7 @@
 			})
 			.addLayer(mapboxTiles);
 
-		var url = "//s3-ap-northeast-1.amazonaws.com/amedas/wind/201704081620.json";
-		var amedas = new L.Amedas(url);
+		var amedas = new L.Amedas();
 		amedas.addTo(map);
 	</script>
 </body>
