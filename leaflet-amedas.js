@@ -36,9 +36,7 @@ L.Amedas = L.Layer.extend({
 
 	getEvents: function (){
 		return {
-			viewreset: this._update,
 			moveend:   this._update,
-			zoom:      this._update,
 		};
 	},
 
@@ -144,7 +142,8 @@ L.Amedas = L.Layer.extend({
 			forceDir: true
 		});
 		var marker = L.marker([point.lat, point.lon], {icon: icon});
-		//marker.bindPopup(point.name + '<br>' + point.dir + ' ' + point.speed + 'm/s');
+		marker.bindPopup(point.name + '<br>' + point.dir + ' ' + point.speed + 'm/s');
+
 		return marker;
 	},
 
