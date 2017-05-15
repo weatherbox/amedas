@@ -135,11 +135,12 @@ L.Amedas = L.Layer.extend({
 	},
 
 	_createMarker: function (point){
+		var deg = this._degrees[point.dir];
 		var icon = L.WindBarb.icon({
-			deg: this._degrees[point.dir],
+			deg: deg,
 			speed: point.speed * 2,
 			pointRadius: 4,
-			forceDir: true
+			forceDir: (deg !== undefined)
 		});
 		var marker = L.marker([point.lat, point.lon], {icon: icon});
 		marker.bindPopup(point.name + '<br>' + point.dir + ' ' + point.speed + 'm/s');
