@@ -135,11 +135,13 @@ L.Amedas = L.Layer.extend({
 	},
 
 	_createMarker: function (point){
+		var deg = this._degrees[point.dir];
 		var icon = L.WindBarb.icon({
-			deg: this._degrees[point.dir],
-			speed: point.speed * 2,
+			deg: deg,
+			speed: point.speed * 2, // 1 kt = 0.5 m/s
+			fillColor: this._color(point.speed),
 			pointRadius: 4,
-			forceDir: true
+			forceDir: (deg !== undefined)
 		});
 		var marker = L.marker([point.lat, point.lon], {icon: icon});
 		marker.bindPopup(point.name + '<br>' + point.dir + ' ' + point.speed + 'm/s');
@@ -152,6 +154,20 @@ L.Amedas = L.Layer.extend({
 		E: 90,  ESE: 112.5, SE: 135, SSE: 157.5,
 		S: 180, SSW: 202.5, SW: 225, WSW: 247.5,
 		W: 270, WNW: 292.5, NW: 315, NNW: 337.5
+	},
+
+	_color: function (speed){
+		if (speed <= 2){
+			return "#2962AD";
+		}else if (speed <= 5){
+			return "#30A0C2";
+		}else if (speed <= 10){
+			return "#71CB50";
+		}else if (speed <= 20){
+			return "#FFEE55";
+		}else{
+			return "#DF6561";
+		}
 	},
 
 });
