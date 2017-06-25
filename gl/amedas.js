@@ -86,7 +86,8 @@ class AmedasGL {
 			source: 'temp-data',
 			layout: {
 				'text-field': '{tempf}',
-				'text-size': 10
+				'text-size': 10,
+				'text-allow-overlap': true
 			},
 			minzoom: 8
 		});
