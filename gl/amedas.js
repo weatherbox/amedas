@@ -58,7 +58,25 @@ class AmedasGL {
 			type: 'circle',
 			source: 'temp-data',
 			paint: {
-				'circle-radius': 2,
+				'circle-radius': {
+					base: 2,
+					stops: [[4, 2], [6, 4], [8, 8], [10, 16]]
+				},
+				'circle-color': {
+					property: 'temp',
+					stops: [
+						[-30, '#002080'],
+						[-5,  '#0041FF'],
+						[0,   '#0096FF'],
+						[5,   '#B9EBFF'],
+						[10,  '#FFFFF0'],
+						[15,  '#FFFF96'],
+						[20,  '#FAF500'],
+						[25,  '#FF9900'],
+						[30,  '#FF2800'],
+						[35,  '#B40068'],
+					]
+				}
 			}
 		});
 	}
