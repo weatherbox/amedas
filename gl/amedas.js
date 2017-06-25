@@ -60,7 +60,7 @@ class AmedasGL {
 			paint: {
 				'circle-radius': {
 					base: 2,
-					stops: [[4, 2], [6, 4], [7, 6], [8, 12], [10, 16]]
+					stops: [[4, 2], [6, 4], [7.99, 6], [8, 12], [10, 16]]
 				},
 				'circle-color': {
 					property: 'temp',
@@ -90,6 +90,8 @@ class AmedasGL {
 			},
 			minzoom: 8
 		});
+
+		this._initPopup();
 	}
 
 	_initGeoJSON (){
@@ -118,5 +120,24 @@ class AmedasGL {
 		return geojson;
 	}
 
+	_initPopup (){
+		var self = this;
+
+		this.map.on('click', function (e){
+			var features = self.map.queryRenderedFeatures(e.point, { layers: ['temp'] });
+			if (!features.length) return;
+
+			var feature = features[0];
+			var popup = new mapboxgl.Popup()
+       			.setLngLat(feature.geometry.coordinates)
+				.setText(feature.properties.name + ' ' + feature.properties.temp + '℃ ')
+				.addTo(self.map);
+		});
+
+		this.map.on('mousemove', function(e) {
+			var features = self.map.queryRenderedFeatures(e.point, { layers: ['temp'] });
+			self.map.getCanvas().style.cursor = (features.length) ? 'pointer' : '';
+		});
+	}
 }
 

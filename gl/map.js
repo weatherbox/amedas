@@ -10,7 +10,7 @@ $(function(){
 	});
 	map.fitBounds([[127, 24], [147, 46]]);
 
-	map.on("load", function() {
+	map.on('load', function() {
 		var amedas = new AmedasGL(map);
 	});
 });
