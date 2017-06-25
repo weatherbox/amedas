@@ -21,7 +21,7 @@ class AmedasGL {
 		this._url = url;
 		var self = this;
 		this._getJSON(url, function (data){
-			console.log(data);
+			console.table(data.data);
 			self.data = data;
 			self._init();
 		});
@@ -60,7 +60,7 @@ class AmedasGL {
 			paint: {
 				'circle-radius': {
 					base: 2,
-					stops: [[4, 2], [6, 4], [8, 8], [10, 16]]
+					stops: [[4, 2], [6, 4], [7, 6], [8, 12], [10, 16]]
 				},
 				'circle-color': {
 					property: 'temp',
@@ -78,6 +78,17 @@ class AmedasGL {
 					]
 				}
 			}
+		});
+
+		this.map.addLayer({
+			id: 'temp-label',
+			type: 'symbol',
+			source: 'temp-data',
+			layout: {
+				'text-field': '{tempf}',
+				'text-size': 10
+			},
+			minzoom: 8
 		});
 	}
 
@@ -98,12 +109,12 @@ class AmedasGL {
 				properties: {
 					id: id,
 					name: point.name,
-					temp: point.temp
+					temp: point.temp,
+					tempf: point.temp.toFixed(1)
 				}
 			});
 		}
 
-		console.log(geojson);
 		return geojson;
 	}
 
