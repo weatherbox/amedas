@@ -57,6 +57,7 @@ export default class Map extends Component {
           if (i == 1) time = d.slice(4, 9);
 
           let id = d[0];
+          if (!point[id]) return;
           return [
             point[id].name,
             +d[9], // value

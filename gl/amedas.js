@@ -60,7 +60,7 @@ class AmedasGL {
 			paint: {
 				'circle-radius': {
 					base: 2,
-					stops: [[4, 2], [6, 4], [7.99, 6], [8, 12], [10, 16]]
+					stops: [[4, 2], [6, 4], [6.99, 6], [7, 10], [10, 16]]
 				},
 				'circle-color': {
 					property: 'temp',
@@ -86,10 +86,13 @@ class AmedasGL {
 			source: 'temp-data',
 			layout: {
 				'text-field': '{tempf}',
-				'text-size': 10,
+				'text-size': {
+					base: 1.5,
+					stops: [[7, 8], [8, 10]]
+				},
 				'text-allow-overlap': true
 			},
-			minzoom: 8
+			minzoom: 7
 		});
 
 		this._initPopup();
