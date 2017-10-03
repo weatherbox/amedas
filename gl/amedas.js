@@ -62,6 +62,7 @@ class AmedasGL {
 					base: 2,
 					stops: [[4, 2], [6, 4], [6.99, 6], [7, 10], [10, 16]]
 				},
+				'circle-opacity': 0.77,
 				'circle-color': {
 					property: 'temp',
 					stops: [
