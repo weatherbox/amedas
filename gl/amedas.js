@@ -54,7 +54,7 @@ class AmedasGL {
 		});
 
 		this.map.addLayer({
-			id: 'temp',
+			id: 'temp-circle',
 			type: 'circle',
 			source: 'temp-data',
 			paint: {
@@ -116,7 +116,7 @@ class AmedasGL {
 				'text-color': '#333'
 			},
 			minzoom: 8.5
-		});
+		}, 'temp-circle');
 
 		this._initPopup();
 	}
