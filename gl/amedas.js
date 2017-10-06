@@ -151,7 +151,7 @@ class AmedasGL {
 		var self = this;
 
 		this.map.on('click', function (e){
-			var features = self.map.queryRenderedFeatures(e.point, { layers: ['temp'] });
+			var features = self.map.queryRenderedFeatures(e.point, { layers: ['temp-circle'] });
 			if (!features.length) return;
 
 			var feature = features[0];
@@ -162,7 +162,7 @@ class AmedasGL {
 		});
 
 		this.map.on('mousemove', function(e) {
-			var features = self.map.queryRenderedFeatures(e.point, { layers: ['temp'] });
+			var features = self.map.queryRenderedFeatures(e.point, { layers: ['temp-circle'] });
 			self.map.getCanvas().style.cursor = (features.length) ? 'pointer' : '';
 		});
 	}
