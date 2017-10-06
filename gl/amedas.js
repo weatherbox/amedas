@@ -54,14 +54,15 @@ class AmedasGL {
 		});
 
 		this.map.addLayer({
-			id: 'temp',
+			id: 'temp-circle',
 			type: 'circle',
 			source: 'temp-data',
 			paint: {
 				'circle-radius': {
 					base: 2,
-					stops: [[4, 2], [6, 4], [6.99, 6], [7, 10], [10, 16]]
+					stops: [[4, 2], [6, 4], [7, 6], [7.0001, 10], [10, 16]]
 				},
+				'circle-opacity': 0.77,
 				'circle-color': {
 					property: 'temp',
 					stops: [
@@ -92,8 +93,30 @@ class AmedasGL {
 				},
 				'text-allow-overlap': true
 			},
+			paint: {
+				'text-color': '#111'
+			},
 			minzoom: 7
 		});
+
+		this.map.addLayer({
+			id: 'point-name-label',
+			type: 'symbol',
+			source: 'temp-data',
+			layout: {
+				'text-field': '{name}',
+				'text-size': 12,
+				'text-offset': {
+					base: 2,
+					stops: [[7, [0, 1.4]], [10, [0, 1.8]]]
+				},
+				'text-allow-overlap': false
+			},
+			paint: {
+				'text-color': '#333'
+			},
+			minzoom: 8.5
+		}, 'temp-circle');
 
 		this._initPopup();
 	}
