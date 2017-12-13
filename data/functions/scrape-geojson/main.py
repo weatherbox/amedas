@@ -4,22 +4,50 @@ import re
 
 def main():
     url = 'https://tenki.jp/amedas/map/'
-    scrape_amedas_html(url)
+    return scrape_amedas_html(url)
 
 def scrape_amedas_html(url):
     html = requests.get(url).text
+
+    time = get_time(html)
     
+    features = []
+
     iter = re.compile(r"L.marker\(\[(.*?), (.*?)\], \{icon:icon_amedas_.*?\}\).addTo\(map\).bindPopup\('(.*?)'\);").finditer(html)
 
     for match in iter:
         lat = float(match.group(1))
         lon = float(match.group(2))
         point_table = match.group(3)
-        print(scrape_amedas_table(point_table))
-        
+        d = scrape_amedas_table(point_table)
+
+        features.append({
+            'type': 'Feature',
+            'geometry': {
+                'type': 'Point',
+                'coordinates': [lon, lat]
+            },
+            'properties': d
+        })
+    
+    geojson = {
+        'type': 'FeatureCollection',
+        'features': features
+    }
+
+    return time, geojson
+
+def get_time(html):
+    r = re.search(r'<time datetime="(.*?)" class="date-time">\d+日(\d+):(\d+)現在</time>', html)
+    time_str1 = r.group(1)
+    hour      = r.group(2)
+    minute    = r.group(3)
+    time = time_str1[0:4] + time_str1[5:7] + time_str1[8:10] + hour + minute
+    return time
 
 def scrape_amedas_table(point_table):
-    return get_id(point_table), {
+    return {
+        'id':         get_id(point_table),
         'name':       get_name(point_table),
         'temp':       get_temp(point_table),
         'rain':       get_rain(point_table),
@@ -76,5 +104,7 @@ def get_wind_dir(point_table):
 
 
 if __name__ == '__main__':
-    main()
+    time, geojson = main()
+    print(time)
+    print(json.dumps(geojson, ensure_ascii=False))
 
