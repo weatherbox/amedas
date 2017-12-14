@@ -31,7 +31,7 @@ class AmedasGL {
             }).then(function(json){
                 console.log(json);
 			    self.data = json;
-			    self._init();
+			    self._showWind();
 		    });
 	}
 
@@ -42,12 +42,12 @@ class AmedasGL {
 	}
 
 	
-	_init (){
-        this.geojson = this._tempGeoJSON();
+	_showTemp (){
+        var geojson = this._tempGeoJSON();
 
 		this.map.addSource('temp-data', {
 			type: 'geojson',
-			data: this.geojson
+			data: geojson
 		});
 
 		this.map.addLayer({
@@ -104,7 +104,7 @@ class AmedasGL {
 				'text-field': '{name}',
 				'text-size': 12,
 				'text-offset': {
-					base: 1.5,
+					base: 2,
 					stops: [[7, [0, 1.4]], [10, [0, 1.8]]]
 				},
 				'text-allow-overlap': false
@@ -132,6 +132,84 @@ class AmedasGL {
 			features: features
 		};
 	}
+
+	_showWind (){
+        var geojson = this._windGeoJSON();
+
+		this.map.addSource('wind-data', {
+			type: 'geojson',
+			data: geojson
+		});
+
+		this.map.addLayer({
+			id: 'wind-arrow',
+			type: 'symbol',
+			source: 'wind-data',
+			layout: {
+				'icon-image': { 
+					'type': 'categorical',
+					'property': 'wind_dir',
+					'stops': [['calm', 'dot-11']],
+					'default': 'airport-15'
+				},
+				'icon-rotate': { 
+					'type': 'identity',
+					'property': 'wind_dir'
+				},
+				'icon-allow-overlap': true
+			}
+		});
+
+		this.map.addLayer({
+			id: 'wind-label',
+			type: 'symbol',
+			source: 'wind-data',
+			layout: {
+				'text-field': '{speedf}',
+				'text-size': {
+					base: 1.5,
+					stops: [[7, 8], [8, 10]]
+				},
+				'text-offset': [1.6, 0]
+			},
+			minzoom: 7
+		});
+		
+        this.map.addLayer({
+			id: 'wind-name-label',
+			type: 'symbol',
+			source: 'wind-data',
+			layout: {
+				'text-field': '{name}',
+				'text-size': 12,
+				'text-offset': {
+					base: 2,
+					stops: [[7, [0, 1.8]], [10, [0, 2]]]
+				},
+				'text-allow-overlap': false
+			},
+			paint: {
+				'text-color': '#333'
+			},
+			minzoom: 8.5
+		}, 'wind-arrow');
+    }
+
+	_windGeoJSON (){
+        var features = this.data.features.filter(function(d){
+            return d.properties.wind_dir != null;
+        }).map(function(d){
+            // for fixed value 0.0
+            d.properties.speedf = d.properties.wind_speed.toFixed(1);
+            return d;
+        });
+
+		return {
+			type: 'FeatureCollection',
+			features: features
+		};
+	}
+
 
 	_initPopup (){
 		var self = this;
