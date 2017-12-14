@@ -148,12 +148,7 @@ class AmedasGL {
 			type: 'symbol',
 			source: 'wind-data',
 			layout: {
-				'text-field': { 
-					'type': 'categorical',
-					'property': 'wind_dir',
-					'stops': [['calm', String.fromCharCode("0xf111")]],
-					'default': String.fromCharCode("0xf124")
-				},
+				'text-field': String.fromCharCode("0xf124"),
 				'text-rotate': { 
 					'type': 'identity',
 					'property': 'degree'
@@ -167,7 +162,27 @@ class AmedasGL {
 			},
             paint: {
                 'text-color': '#333'
-            }
+            },
+            filter: ["!=", "wind_dir", "calm"]
+		});
+		
+        this.map.addLayer({
+			id: 'wind-dot',
+			type: 'symbol',
+			source: 'wind-data',
+			layout: {
+				'text-field': String.fromCharCode("0xf111"),
+                'text-font': ['FontAwesome Regular'],
+                'text-size': 10,
+                'text-line-height': 1,
+                'text-padding': 0,
+                'text-allow-overlap': true,
+                'icon-optional': true
+			},
+            paint: {
+                'text-color': '#333'
+            },
+            filter: ["==", "wind_dir", "calm"]
 		});
 
 		this.map.addLayer({
@@ -202,7 +217,7 @@ class AmedasGL {
 				'text-color': '#333'
 			},
 			minzoom: 8.5
-		}, 'wind-arrow');
+		}, 'wind-label');
     }
 
 	_windGeoJSON (){
