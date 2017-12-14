@@ -141,23 +141,33 @@ class AmedasGL {
 			data: geojson
 		});
 
+        // colored icon (FontAwesome)
+        // https://github.com/mapbox/mapbox-gl-js/issues/3605#issuecomment-290110941
 		this.map.addLayer({
 			id: 'wind-arrow',
 			type: 'symbol',
 			source: 'wind-data',
 			layout: {
-				'icon-image': { 
+				'text-field': { 
 					'type': 'categorical',
 					'property': 'wind_dir',
-					'stops': [['calm', 'dot-11']],
-					'default': 'airport-15'
+					'stops': [['calm', String.fromCharCode("0xf111")]],
+					'default': String.fromCharCode("0xf124")
 				},
-				'icon-rotate': { 
+				'text-rotate': { 
 					'type': 'identity',
-					'property': 'wind_dir'
+					'property': 'degree'
 				},
-				'icon-allow-overlap': true
-			}
+                'text-font': ['FontAwesome Regular'],
+                'text-size': 18,
+                'text-line-height': 1,
+                'text-padding': 0,
+                'text-allow-overlap': true,
+                'icon-optional': true
+			},
+            paint: {
+                'text-color': '#333'
+            }
 		});
 
 		this.map.addLayer({
@@ -201,6 +211,8 @@ class AmedasGL {
         }).map(function(d){
             // for fixed value 0.0
             d.properties.speedf = d.properties.wind_speed.toFixed(1);
+            var dir = d.properties.wind_dir;
+            d.properties.degree = (dir == 'calm') ? 0 : dir - 45;
             return d;
         });
 
