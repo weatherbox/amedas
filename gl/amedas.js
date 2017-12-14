@@ -1,30 +1,38 @@
+const s3Bucket = "//s3-ap-northeast-1.amazonaws.com/amedas/"
+
 class AmedasGL {
 	constructor (map){
 		this.map = map;
 
 		let self = this;
 		this._loadAmedasJSON(function (data){
-			var data_url = "//s3-ap-northeast-1.amazonaws.com/amedas/temp/" + data.time + ".json";
-			self._loadJSON(data_url);
+			var data_url = s3Bucket + data.time.substr(0, 8) + '/amedas-' + data.time + ".geojson.gz";
+			self._loadGeoJSON(data_url);
+			console.log(data.time);
 			//self._showTime(data.time);
 		});
 	}
 
 	_loadAmedasJSON (callback){
-		var url = "//s3-ap-northeast-1.amazonaws.com/amedas/amedas.json";
-		this._getJSON(url, function (data){
-			callback(data);
-		});
+		fetch(s3Bucket + "amedas.json")
+            .then(function(res){
+                return res.json();
+            }).then(function(json){
+			    callback(json);
+            });
 	}
 
-	_loadJSON (url){
+	_loadGeoJSON (url){
 		this._url = url;
 		var self = this;
-		this._getJSON(url, function (data){
-			console.table(data.data);
-			self.data = data;
-			self._init();
-		});
+		fetch(url)
+            .then(function(res){
+                return res.json();
+            }).then(function(json){
+                console.log(json);
+			    self.data = json;
+			    self._init();
+		    });
 	}
 
 	_showTime (time){
@@ -33,24 +41,13 @@ class AmedasGL {
 		//document.getElementById("time").innerHTML = time_str;	
 	}
 
-	// substitute $.getJSON
-	_getJSON (url, callback){
-		var xhr = new XMLHttpRequest();
-		xhr.onreadystatechange = function(){
-			if ((xhr.readyState === 4) && (xhr.status === 200)) {
-				var data = JSON.parse(xhr.responseText);
-				callback(data);
-			}
-		}
-		xhr.open("GET", url, true);
-		xhr.send(null);	
-	}
 	
 	_init (){
-		var geojson = this._initGeoJSON();
+        this.geojson = this._tempGeoJSON();
+
 		this.map.addSource('temp-data', {
 			type: 'geojson',
-			data: geojson
+			data: this.geojson
 		});
 
 		this.map.addLayer({
@@ -107,7 +104,7 @@ class AmedasGL {
 				'text-field': '{name}',
 				'text-size': 12,
 				'text-offset': {
-					base: 2,
+					base: 1.5,
 					stops: [[7, [0, 1.4]], [10, [0, 1.8]]]
 				},
 				'text-allow-overlap': false
@@ -121,30 +118,19 @@ class AmedasGL {
 		this._initPopup();
 	}
 
-	_initGeoJSON (){
-		var geojson = {
+	_tempGeoJSON (){
+        var features = this.data.features.filter(function(d){
+            return d.properties.temp != null;
+        }).map(function(d){
+            // for fixed value 0.0
+            d.properties.tempf = d.properties.temp.toFixed(1);
+            return d;
+        });
+
+		return {
 			type: 'FeatureCollection',
-			features: []
+			features: features
 		};
-
-		for (var id in this.data.data){
-			var point = this.data.data[id];
-			geojson.features.push({
-				type: 'Feature',
-				geometry: {
-					type: 'Point',
-					coordinates: [point.lon, point.lat]
-				},
-				properties: {
-					id: id,
-					name: point.name,
-					temp: point.temp,
-					tempf: point.temp.toFixed(1)
-				}
-			});
-		}
-
-		return geojson;
 	}
 
 	_initPopup (){
