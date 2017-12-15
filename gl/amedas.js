@@ -31,6 +31,8 @@ class AmedasGL {
             }).then(function(json){
                 console.log(json);
 			    self.data = json;
+
+			    //self._showTemp();
 			    self._showWind();
 		    });
 	}
@@ -155,7 +157,13 @@ class AmedasGL {
 				},
                 'text-rotation-alignment': 'map',
                 'text-font': ['FontAwesome Regular'],
-                'text-size': 18,
+                'text-size': {
+                    stops: [
+                        [4, 12],
+                        [7, 18],
+                        [10, 24]
+                    ]
+                },
                 'text-line-height': 1,
                 'text-padding': 0,
                 'text-allow-overlap': true,
@@ -166,7 +174,7 @@ class AmedasGL {
                     type: 'interval',
                     property: 'wind_speed',
                     stops: [
-                        [0,  '#a0a0a0'],
+                        [0,  '#b9ebff'],
                         [5,  '#0049F5'],
                         [10, '#FAF351'],
                         [15, '#F39D39'],
@@ -176,7 +184,7 @@ class AmedasGL {
                 },
                 'text-opacity': {
                     stops: [
-                        [5, 0.82],
+                        [5, 0.86],
                         [8, 0.95]
                     ]
                 }
@@ -192,7 +200,12 @@ class AmedasGL {
 				'text-field': String.fromCharCode("0xf111"),
                 'text-font': ['FontAwesome Regular'],
                 'text-rotation-alignment': 'map',
-                'text-size': 10,
+                'text-size': {
+                    stops: [
+                        [6, 6],
+                        [8, 10]
+                    ]
+                },
                 'text-line-height': 1,
                 'text-padding': 0,
                 'text-allow-overlap': true,
