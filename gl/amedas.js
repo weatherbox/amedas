@@ -153,6 +153,7 @@ class AmedasGL {
 					'type': 'identity',
 					'property': 'degree'
 				},
+                'text-rotation-alignment': 'map',
                 'text-font': ['FontAwesome Regular'],
                 'text-size': 18,
                 'text-line-height': 1,
@@ -161,7 +162,24 @@ class AmedasGL {
                 'icon-optional': true
 			},
             paint: {
-                'text-color': '#333'
+                'text-color': {
+                    type: 'interval',
+                    property: 'wind_speed',
+                    stops: [
+                        [0,  '#a0a0a0'],
+                        [5,  '#0049F5'],
+                        [10, '#FAF351'],
+                        [15, '#F39D39'],
+                        [20, '#EC4125'],
+                        [25, '#A62366']
+                    ]
+                },
+                'text-opacity': {
+                    stops: [
+                        [5, 0.82],
+                        [8, 0.95]
+                    ]
+                }
             },
             filter: ["!=", "wind_dir", "calm"]
 		});
@@ -173,6 +191,7 @@ class AmedasGL {
 			layout: {
 				'text-field': String.fromCharCode("0xf111"),
                 'text-font': ['FontAwesome Regular'],
+                'text-rotation-alignment': 'map',
                 'text-size': 10,
                 'text-line-height': 1,
                 'text-padding': 0,
@@ -180,10 +199,17 @@ class AmedasGL {
                 'icon-optional': true
 			},
             paint: {
-                'text-color': '#333'
+                'text-color': '#aeaeae',
+                'text-opacity': {
+                    stops: [
+                        [5, 0.82],
+                        [8, 0.95]
+                    ]
+                }
             },
-            filter: ["==", "wind_dir", "calm"]
-		});
+            filter: ["==", "wind_dir", "calm"],
+			minzoom: 6
+		}, 'wind-arrow');
 
 		this.map.addLayer({
 			id: 'wind-label',
@@ -195,7 +221,8 @@ class AmedasGL {
 					base: 1.5,
 					stops: [[7, 8], [8, 10]]
 				},
-				'text-offset': [1.6, 0]
+				'text-offset': [1.6, -0.2],
+                'text-allow-overlap': false
 			},
 			minzoom: 7
 		});
@@ -209,7 +236,7 @@ class AmedasGL {
 				'text-size': 12,
 				'text-offset': {
 					base: 2,
-					stops: [[7, [0, 1.8]], [10, [0, 2]]]
+					stops: [[7, [0, 1.4]], [10, [0, 1.8]]]
 				},
 				'text-allow-overlap': false
 			},
@@ -227,7 +254,7 @@ class AmedasGL {
             // for fixed value 0.0
             d.properties.speedf = d.properties.wind_speed.toFixed(1);
             var dir = d.properties.wind_dir;
-            d.properties.degree = (dir == 'calm') ? 0 : dir - 45;
+            d.properties.degree = (dir == 'calm') ? 0 : dir - 45 - 180;
             return d;
         });
 
