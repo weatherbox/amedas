@@ -1,30 +1,40 @@
+const s3Bucket = "//s3-ap-northeast-1.amazonaws.com/amedas/";
+
+
 class AmedasGL {
 	constructor (map){
 		this.map = map;
 
 		let self = this;
 		this._loadAmedasJSON(function (data){
-			var data_url = "//s3-ap-northeast-1.amazonaws.com/amedas/temp/" + data.time + ".json";
-			self._loadJSON(data_url);
+			var data_url = s3Bucket + data.time.substr(0, 8) + '/amedas-' + data.time + ".geojson.gz";
+			self._loadGeoJSON(data_url);
+			console.log(data.time);
 			//self._showTime(data.time);
 		});
 	}
 
 	_loadAmedasJSON (callback){
-		var url = "//s3-ap-northeast-1.amazonaws.com/amedas/amedas.json";
-		this._getJSON(url, function (data){
-			callback(data);
-		});
+		fetch(s3Bucket + "amedas.json")
+            .then(function(res){
+                return res.json();
+            }).then(function(json){
+			    callback(json);
+            });
 	}
 
-	_loadJSON (url){
+	_loadGeoJSON (url){
 		this._url = url;
 		var self = this;
-		this._getJSON(url, function (data){
-			console.table(data.data);
-			self.data = data;
-			self._init();
-		});
+		fetch(url)
+            .then(function(res){
+                return res.json();
+            }).then(function(json){
+                console.log(json);
+			    self.data = json;
+
+			    self.show('temp');
+		    });
 	}
 
 	_showTime (time){
@@ -33,76 +43,121 @@ class AmedasGL {
 		//document.getElementById("time").innerHTML = time_str;	
 	}
 
-	// substitute $.getJSON
-	_getJSON (url, callback){
-		var xhr = new XMLHttpRequest();
-		xhr.onreadystatechange = function(){
-			if ((xhr.readyState === 4) && (xhr.status === 200)) {
-				var data = JSON.parse(xhr.responseText);
-				callback(data);
-			}
-		}
-		xhr.open("GET", url, true);
-		xhr.send(null);	
-	}
 	
-	_init (){
-		var geojson = this._initGeoJSON();
-		this.map.addSource('temp-data', {
+	show (type){
+        this.temp = new AmedasGLTemp(this.map, this.data);
+    }
+
+	_showWind (){
+        var geojson = this._windGeoJSON();
+
+		this.map.addSource('wind-data', {
 			type: 'geojson',
 			data: geojson
 		});
 
+        // colored icon (FontAwesome)
+        // https://github.com/mapbox/mapbox-gl-js/issues/3605#issuecomment-290110941
 		this.map.addLayer({
-			id: 'temp-circle',
-			type: 'circle',
-			source: 'temp-data',
-			paint: {
-				'circle-radius': {
-					base: 2,
-					stops: [[4, 2], [6, 4], [7, 6], [7.0001, 10], [10, 16]]
+			id: 'wind-arrow',
+			type: 'symbol',
+			source: 'wind-data',
+			layout: {
+				'text-field': String.fromCharCode("0xf124"),
+				'text-rotate': { 
+					'type': 'identity',
+					'property': 'degree'
 				},
-				'circle-opacity': 0.77,
-				'circle-color': {
-					property: 'temp',
-					stops: [
-						[-30, '#002080'],
-						[-5,  '#0041FF'],
-						[0,   '#0096FF'],
-						[5,   '#B9EBFF'],
-						[10,  '#FFFFF0'],
-						[15,  '#FFFF96'],
-						[20,  '#FAF500'],
-						[25,  '#FF9900'],
-						[30,  '#FF2800'],
-						[35,  '#B40068'],
-					]
-				}
-			}
+                'text-rotation-alignment': 'map',
+                'text-font': ['FontAwesome Regular'],
+                'text-size': {
+                    stops: [
+                        [4, 12],
+                        [7, 18],
+                        [10, 24]
+                    ]
+                },
+                'text-line-height': 1,
+                'text-padding': 0,
+                'text-allow-overlap': true,
+                'icon-optional': true
+			},
+            paint: {
+                'text-color': {
+                    type: 'interval',
+                    property: 'wind_speed',
+                    stops: [
+                        [0,  '#b9ebff'],
+						[3,  '#0096FF'],
+                        [5,  '#0049F5'],
+                        [10, '#FAF351'],
+                        [15, '#F39D39'],
+                        [20, '#EC4125'],
+                        [25, '#A62366']
+                    ]
+                },
+                'text-opacity': {
+                    stops: [
+                        [5, 0.86],
+                        [8, 0.95]
+                    ]
+                }
+            },
+            filter: ["!=", "wind_dir", "calm"]
 		});
+		
+        this.map.addLayer({
+			id: 'wind-dot',
+			type: 'symbol',
+			source: 'wind-data',
+			layout: {
+				'text-field': String.fromCharCode("0xf111"),
+                'text-font': ['FontAwesome Regular'],
+                'text-rotation-alignment': 'map',
+                'text-size': {
+                    stops: [
+                        [6, 6],
+                        [8, 10]
+                    ]
+                },
+                'text-line-height': 1,
+                'text-padding': 0,
+                'text-allow-overlap': true,
+                'icon-optional': true
+			},
+            paint: {
+                'text-color': '#aeaeae',
+                'text-opacity': {
+                    stops: [
+                        [5, 0.82],
+                        [8, 0.95]
+                    ]
+                }
+            },
+            filter: ["==", "wind_dir", "calm"],
+			minzoom: 6
+		}, 'wind-arrow');
 
 		this.map.addLayer({
-			id: 'temp-label',
+			id: 'wind-label',
 			type: 'symbol',
-			source: 'temp-data',
+			source: 'wind-data',
 			layout: {
-				'text-field': '{tempf}',
+				'text-field': '{speedf}',
 				'text-size': {
 					base: 1.5,
 					stops: [[7, 8], [8, 10]]
 				},
-				'text-allow-overlap': true
-			},
-			paint: {
-				'text-color': '#111'
+				'text-offset': [1.6, -0.2],
+                'text-allow-overlap': false
 			},
 			minzoom: 7
 		});
-
-		this.map.addLayer({
-			id: 'point-name-label',
+		
+        this.map.addLayer({
+			id: 'wind-name-label',
 			type: 'symbol',
-			source: 'temp-data',
+			source: 'wind-data',
 			layout: {
 				'text-field': '{name}',
 				'text-size': 12,
@@ -116,55 +171,26 @@ class AmedasGL {
 				'text-color': '#333'
 			},
 			minzoom: 8.5
-		}, 'temp-circle');
+		}, 'wind-label');
+    }
 
-		this._initPopup();
-	}
+	_windGeoJSON (){
+        var features = this.data.features.filter(function(d){
+            return d.properties.wind_dir != null;
+        }).map(function(d){
+            // for fixed value 0.0
+            d.properties.speedf = d.properties.wind_speed.toFixed(1);
+            var dir = d.properties.wind_dir;
+            d.properties.degree = (dir == 'calm') ? 0 : dir - 45 - 180;
+            return d;
+        });
 
-	_initGeoJSON (){
-		var geojson = {
+		return {
 			type: 'FeatureCollection',
-			features: []
+			features: features
 		};
-
-		for (var id in this.data.data){
-			var point = this.data.data[id];
-			geojson.features.push({
-				type: 'Feature',
-				geometry: {
-					type: 'Point',
-					coordinates: [point.lon, point.lat]
-				},
-				properties: {
-					id: id,
-					name: point.name,
-					temp: point.temp,
-					tempf: point.temp.toFixed(1)
-				}
-			});
-		}
-
-		return geojson;
 	}
 
-	_initPopup (){
-		var self = this;
 
-		this.map.on('click', function (e){
-			var features = self.map.queryRenderedFeatures(e.point, { layers: ['temp'] });
-			if (!features.length) return;
-
-			var feature = features[0];
-			var popup = new mapboxgl.Popup()
-       			.setLngLat(feature.geometry.coordinates)
-				.setText(feature.properties.name + ' ' + feature.properties.temp + '℃ ')
-				.addTo(self.map);
-		});
-
-		this.map.on('mousemove', function(e) {
-			var features = self.map.queryRenderedFeatures(e.point, { layers: ['temp'] });
-			self.map.getCanvas().style.cursor = (features.length) ? 'pointer' : '';
-		});
-	}
 }
 

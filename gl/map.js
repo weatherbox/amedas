@@ -6,6 +6,7 @@ $(function(){
 		zoom: 5,
 		center: [136.6, 35.5],
 		attributionControl: false,
+        logoPosition: 'bottom-right',
 		hash: true,
 		localIdeographFontFamily: "'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3', Meiryo, メイリオ, sans-serif"
 	});
