@@ -50,6 +50,9 @@ class AmedasGL {
         if (this._layer) this._layer.remove();
 
         switch (type){
+            case 'rain':
+                this._layer = new AmedasGLRain(this.map, this.data);
+                break;
             case 'temp':
                 this._layer = new AmedasGLTemp(this.map, this.data);
                 break;

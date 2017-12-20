@@ -91,7 +91,7 @@ class AmedasGLTemp {
 			minzoom: 8.5
 		}, 'temp-circle');
 
-		this._initPopup();
+		//this._initPopup();
 	}
     
     remove (){
