@@ -33,7 +33,8 @@ class AmedasGL {
                 console.log(json);
 			    self.data = json;
 
-			    self.show('wind');
+                var init = self._getQueryType() || 'wind';
+			    self.show(init);
 		    });
 	}
 
@@ -55,9 +56,21 @@ class AmedasGL {
             case 'wind':
                 this._layer = new AmedasGLWind(this.map, this.data);
                 break;
+            default:
+                this._layer = null;
+                return;
         }
 
         this._type = type;
+        this._setQueryType(type);
+    }
+
+    _getQueryType (){
+        return location.search.slice(1);
+    }
+
+    _setQueryType(type){
+        history.replaceState(null, null, '?' + type + location.hash);
     }
 }
 
