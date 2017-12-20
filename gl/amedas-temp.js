@@ -93,6 +93,13 @@ class AmedasGLTemp {
 
 		this._initPopup();
 	}
+    
+    remove (){
+        this.map.removeLayer('temp-circle');
+        this.map.removeLayer('temp-label');
+        this.map.removeLayer('temp-name-label');
+        this.map.removeSource('temp-data');
+    }
 
 	_initPopup (){
 		var self = this;

@@ -60,13 +60,13 @@ class AmedasGLWind {
                     type: 'interval',
                     property: 'wind_speed',
                     stops: [
-                        [0,  '#b9ebff'],
-						[3,  '#0096FF'],
-                        [5,  '#0049F5'],
-                        [10, '#FAF351'],
-                        [15, '#F39D39'],
-                        [20, '#EC4125'],
-                        [25, '#A62366']
+                        [0,   '#b9ebff'],
+						[2.5, '#0096FF'],
+                        [5,   '#0049F5'],
+                        [10,  '#FAF351'],
+                        [15,  '#F39D39'],
+                        [20,  '#EC4125'],
+                        [25,  '#A62366']
                     ]
                 },
                 'text-opacity': {
@@ -147,5 +147,12 @@ class AmedasGLWind {
 		}, 'wind-label');
     }
 
+    remove (){
+        this.map.removeLayer('wind-arrow');
+        this.map.removeLayer('wind-dot');
+        this.map.removeLayer('wind-label');
+        this.map.removeLayer('wind-name-label');
+        this.map.removeSource('wind-data');
+    }
 }
 

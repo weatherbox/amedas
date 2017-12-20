@@ -45,14 +45,19 @@ class AmedasGL {
 
 	
 	show (type){
+        if (type == this._type) return;
+        if (this._layer) this._layer.remove();
+
         switch (type){
             case 'temp':
-                this.temp = new AmedasGLTemp(this.map, this.data);
+                this._layer = new AmedasGLTemp(this.map, this.data);
                 break;
             case 'wind':
-                this.wind = new AmedasGLWind(this.map, this.data);
+                this._layer = new AmedasGLWind(this.map, this.data);
                 break;
         }
+
+        this._type = type;
     }
 }
 
