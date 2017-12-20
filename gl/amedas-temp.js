@@ -67,7 +67,14 @@ class AmedasGLTemp {
 				'text-allow-overlap': true
 			},
 			paint: {
-				'text-color': '#111'
+				'text-color': {
+                    type: 'interval',
+					property: 'temp',
+                    stops: [
+                        [-100, '#fff'],
+                        [0, '#111']
+                    ]
+                }
 			},
 			minzoom: 7
 		});
