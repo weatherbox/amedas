@@ -30,7 +30,9 @@
 	<script type="riot/tag" src="map-type.tag"></script>
 	<script src="https://cdn.jsdelivr.net/npm/riot@3.7/riot+compiler.min.js"></script>
 	<script>
-		riot.mount('*')
+		riot.compile(function() {
+			riot.mount('map-type');
+		});
 	</script>
 
 </body>

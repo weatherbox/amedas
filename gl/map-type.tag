@@ -14,7 +14,7 @@
 			{ id: 'sun',  name: '日照' },
 			{ id: 'snow', name: '積雪' }
 		]
-		this.selected = 'wind'
+		this.selected = location.search.slice(1) || 'wind';
 
 		select(id) {
 			window.amedas.show(id);
