@@ -12,6 +12,6 @@ var map = new mapboxgl.Map({
 });
 
 map.on('load', function() {
-    var amedas = new AmedasGL(map);
+    window.amedas = new AmedasGL(map);
 });
 

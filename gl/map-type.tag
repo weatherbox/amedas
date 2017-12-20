@@ -1,8 +1,8 @@
 <map-type>
 	<div class="map-type">
 		<div each='{types}'>
-			<input id="map-type-{ id }" type="radio" name="profile" checked={ id == default }>
-			<label for="map-type-{ id }">{ name }</label>
+			<input id="map-type-{ id }" type="radio" name="profile" checked={ id == selected }>
+			<label for="map-type-{ id }" onclick={ select.bind(this, id) }>{ name }</label>
 		</div>
 	</div>
 
@@ -14,12 +14,17 @@
 			{ id: 'sun',  name: '日照' },
 			{ id: 'snow', name: '積雪' }
 		]
-		this.default = 'wind'
+		this.selected = 'wind'
+
+		select(id) {
+			window.amedas.show(id);
+		}
 	</script>
 
 	<style>
 		:scope * {
 			box-sizing: border-box;
+			-webkit-tap-highlight-color: rgba(0,0,0,0);
 		}
 		.map-type {
 			z-index: 100;
@@ -35,7 +40,6 @@
 		}
 		.map-type div {
 			display: inline-block;
-			margin: 0;
 		}
 		.map-type label {
 		    cursor: pointer;
