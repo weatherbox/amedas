@@ -94,5 +94,12 @@ class AmedasGLSun {
         this.map.removeLayer('sun-name-label');
         this.map.removeSource('sun-data');
     }
+    
+    queryFeatures (point){
+		return this.map.queryRenderedFeatures(point, { layers: ['sun-circle'] });
+    }
+    featureText (feature){
+		return feature.properties.name + ' ' + feature.properties.sunlight + 'min'
+    }
 }
 

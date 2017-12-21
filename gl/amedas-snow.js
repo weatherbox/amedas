@@ -133,5 +133,12 @@ class AmedasGLSnow {
         this.map.removeLayer('snow-name-label');
         this.map.removeSource('snow-data');
     }
+    
+    queryFeatures (point){
+		return this.map.queryRenderedFeatures(point, { layers: ['snow-circle1', 'snow-circle0'] });
+    }
+    featureText (feature){
+		return feature.properties.name + ' ' + feature.properties.snow + 'cm'
+    }
 }
 

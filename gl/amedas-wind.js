@@ -154,5 +154,27 @@ class AmedasGLWind {
         this.map.removeLayer('wind-name-label');
         this.map.removeSource('wind-data');
     }
+    
+    queryFeatures (point){
+		return this.map.queryRenderedFeatures(point, { layers: ['wind-arrow', 'wind-dot'] });
+    }
+    featureText (feature){
+        var prop = feature.properties;
+        var dir = this._dirText(prop.wind_dir);
+		return prop.name + ' ' + dir + ' ' + prop.speedf + 'm/s'
+    }
+    _dirText (dir){
+        if (dir == 'calm'){
+            return 'calm';
+        }else{
+            var directions = [
+                'N', 'NNE', 'NE', 'ENE',
+                'E', 'ESE', 'SE', 'SSE',
+                'S', 'SSW', 'SW', 'WSW',
+                'W', 'WNW', 'NW', 'NNW'
+            ];
+            return directions[dir / 22.5];
+        }
+    }
 }
 

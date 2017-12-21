@@ -139,5 +139,12 @@ class AmedasGLRain {
         this.map.removeLayer('rain-name-label');
         this.map.removeSource('rain-data');
     }
+    
+    queryFeatures (point){
+		return this.map.queryRenderedFeatures(point, { layers: ['rain-circle1', 'rain-circle0'] });
+    }
+    featureText (feature){
+		return feature.properties.name + ' ' + feature.properties.rainf + 'mm'
+    }
 }
 
