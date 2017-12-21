@@ -10,7 +10,7 @@ class AmedasGL {
 			var data_url = s3Bucket + data.time.substr(0, 8) + '/amedas-' + data.time + ".geojson.gz";
 			self._loadGeoJSON(data_url);
 			console.log(data.time);
-			//self._showTime(data.time);
+			self._showTime(data.time);
 		});
 	}
 
@@ -39,9 +39,8 @@ class AmedasGL {
 	}
 
 	_showTime (time){
-		var time_str = time.substr(0, 4) + "/" + time.substr(4, 2) + "/" + time.substr(6, 2) +
-			" " + time.substr(8, 2) + ":" + time.substr(10, 2);
-		//document.getElementById("time").innerHTML = time_str;	
+        var time_str = time.substr(8, 2) + ":" + time.substr(10, 2);
+        window.mapTime.set(time_str);
 	}
 
 	
