@@ -59,6 +59,9 @@ class AmedasGL {
             case 'wind':
                 this._layer = new AmedasGLWind(this.map, this.data);
                 break;
+            case 'sun':
+                this._layer = new AmedasGLSun(this.map, this.data);
+                break;
             case 'snow':
                 this._layer = new AmedasGLSnow(this.map, this.data);
                 break;
