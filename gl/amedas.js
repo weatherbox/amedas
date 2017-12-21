@@ -12,6 +12,8 @@ class AmedasGL {
 			console.log(data.time);
 			self._showTime(data.time);
 		});
+
+        this._initMapEvent();
 	}
 
 	_loadAmedasJSON (callback){
@@ -77,8 +79,41 @@ class AmedasGL {
         return location.search.slice(1);
     }
 
-    _setQueryType(type){
+    _setQueryType (type){
         history.replaceState(null, null, '?' + type + location.hash);
+    }
+
+    _initMapEvent (){
+        this._popup = new mapboxgl.Popup({ closeButton: false });
+        this._moving = false;
+        this._zooming = false;
+
+        var self = this;
+        this.map.on('mousemove', function (e){ self._hover(e); });
+        //map.on('click', this.select);
+        this.map.on('movestart', function (){ self._moving = true; });
+        this.map.on('moveend',   function (){ self._moving = false; });
+        this.map.on('zoomstart', function (){ self._zooming = true; });
+        this.map.on('zoomend',   function (){ self._zooming = false; });
+    }
+
+    _hover (e){
+        if (this._moving || this._zooming) return false;
+
+        if (this._layer){
+            var features = this._layer.queryFeatures(e.point);
+            map.getCanvas().style.cursor = (features.length) ? 'crosshair' : '';
+            
+            if (!features.length) {
+                this._popup.remove();
+                return;
+            }
+
+            var feature = features[0];
+            this._popup.setLngLat(feature.geometry.coordinates)
+                .setText(this._layer.featureText(feature))
+                .addTo(this.map);
+        }
     }
 }
 

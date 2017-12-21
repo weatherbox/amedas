@@ -108,23 +108,10 @@ class AmedasGLTemp {
         this.map.removeSource('temp-data');
     }
 
-	_initPopup (){
-		var self = this;
-
-		this.map.on('click', function (e){
-			var features = self.map.queryRenderedFeatures(e.point, { layers: ['temp-circle'] });
-			if (!features.length) return;
-
-			var feature = features[0];
-			var popup = new mapboxgl.Popup()
-       			.setLngLat(feature.geometry.coordinates)
-				.setText(feature.properties.name + ' ' + feature.properties.temp + '℃ ')
-				.addTo(self.map);
-		});
-
-		this.map.on('mousemove', function(e) {
-			var features = self.map.queryRenderedFeatures(e.point, { layers: ['temp-circle'] });
-			self.map.getCanvas().style.cursor = (features.length) ? 'pointer' : '';
-		});
-	}
+    queryFeatures (point){
+		return this.map.queryRenderedFeatures(point, { layers: ['temp-circle'] });
+    }
+    featureText (feature){
+		return feature.properties.name + ' ' + feature.properties.temp + '℃'
+    }
 }
