@@ -14,15 +14,33 @@
 <body>
 	<div id='map'></div>
 
+	<map-time></map-time>
+	<map-type></map-type>
+
     <script src='//api.tiles.mapbox.com/mapbox-gl-js/v0.42.2/mapbox-gl.js'></script>
-	<script src="//cdnjs.cloudflare.com/ajax/libs/fetch/2.0.3/fetch.min.js"></script>
 	<script src="//code.jquery.com/jquery-3.1.1.min.js"></script>
 	<script src="//cdn.jsdelivr.net/semantic-ui/2.2.10/semantic.min.js"></script>
+
+	<!-- map -->
+	<script src="amedas-rain.js"></script>
+	<script src="amedas-wind.js"></script>
+	<script src="amedas-temp.js"></script>
+	<script src="amedas-sun.js"></script>
+	<script src="amedas-snow.js"></script>
+	<script src="amedas.js"></script>
 	<script src="map.js"></script>
 
-	<script src="amedas-temp.js"></script>
-	<script src="amedas.js"></script>
-
+	<!-- riot -->
+	<script type="riot/tag" src="map-type.tag"></script>
+	<script type="riot/tag" src="map-time.tag"></script>
+	<script src="https://cdn.jsdelivr.net/npm/riot@3.7/riot+compiler.min.js"></script>
+	<script>
+		riot.compile(function() {
+			riot.mount('map-type');
+			var items = riot.mount('map-time');
+			window.mapTime = items[0];
+		});
+	</script>
 
 </body>
 </html>
