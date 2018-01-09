@@ -123,8 +123,8 @@ class AmedasGL {
             
             var feature = features[0];
             var id = feature.properties.tid;
-            console.log(id);
-            window.infoBar.show();
+            console.log(feature.properties.name, id);
+            window.infoBar.showPoint(feature.properties.name, id);
         }
     }
 }
