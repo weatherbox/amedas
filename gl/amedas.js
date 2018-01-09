@@ -89,8 +89,8 @@ class AmedasGL {
         this._zooming = false;
 
         var self = this;
+        this.map.on('click', function (e){ self.select(e); });
         this.map.on('mousemove', function (e){ self._hover(e); });
-        //map.on('click', this.select);
         this.map.on('movestart', function (){ self._moving = true; });
         this.map.on('moveend',   function (){ self._moving = false; });
         this.map.on('zoomstart', function (){ self._zooming = true; });
@@ -113,6 +113,18 @@ class AmedasGL {
             this._popup.setLngLat(feature.geometry.coordinates)
                 .setText(this._layer.featureText(feature))
                 .addTo(this.map);
+        }
+    }
+
+    select (e){
+        if (this._layer){
+            var features = this._layer.queryFeatures(e.point);   
+            if (!features.length) return;
+            
+            var feature = features[0];
+            var id = feature.properties.tid;
+            console.log(id);
+            window.infoBar.show();
         }
     }
 }

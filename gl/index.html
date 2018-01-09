@@ -12,10 +12,16 @@
 	</style>
 </head>
 <body>
-	<div id='map'></div>
+	<div class="pusher">
+		<div id='map'></div>
 
-	<map-time></map-time>
-	<map-type></map-type>
+		<map-time></map-time>
+		<map-type></map-type>
+	</div>
+
+	<div id="sidebar" class="ui sidebar bottom menu vertical">
+	<info-bar></info-bar>
+	</div>
 
     <script src='//api.tiles.mapbox.com/mapbox-gl-js/v0.42.2/mapbox-gl.js'></script>
 	<script src="//code.jquery.com/jquery-3.1.1.min.js"></script>
@@ -33,12 +39,15 @@
 	<!-- riot -->
 	<script type="riot/tag" src="map-type.tag"></script>
 	<script type="riot/tag" src="map-time.tag"></script>
+	<script type="riot/tag" src="info-bar.tag"></script>
 	<script src="https://cdn.jsdelivr.net/npm/riot@3.7/riot+compiler.min.js"></script>
 	<script>
 		riot.compile(function() {
 			riot.mount('map-type');
 			var items = riot.mount('map-time');
 			window.mapTime = items[0];
+			var items = riot.mount('info-bar');
+			window.infoBar = items[0];
 		});
 	</script>
 
