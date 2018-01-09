@@ -3,20 +3,25 @@ from bs4 import BeautifulSoup
 import requests
 import re
 
-app = Chalice(app_name='api')
+app = Chalice(app_name='amedas-api')
 
 
-@app.route('/hello/{name}')
-def hello_name(name):
-    return {'hello': 'world'}
+@app.route('/point/{id1}/{id2}/{id3}', cors=True)
+def hello_name(id1, id2, id3):
+    return parse('/'.join([id1, id2, id3]))
 
 
 
 def parse(id):
-    r = requests.get('https://tenki.jp/amedas/9/46/86467.html')
+    r = requests.get('https://tenki.jp/amedas/' + id + '.html')
     soup = BeautifulSoup(r.text, "html.parser")
 
     data = {}
+
+    # name
+    title = soup.title.text
+    m = re.match(r"(.+)\(", title)
+    data['name'] = m.group(1)
 
     # altitude
     address = soup.find("td", class_="amedas-checked-map-link").text
@@ -25,14 +30,14 @@ def parse(id):
     
     # datetime
     time = soup.find("time", id="amedas-point-datetime")
-    data['datetime'] = time.get("datetime"))
+    data['datetime'] = time.get("datetime")
 
     # table 10min, 1hour
     tables = soup.find_all("table", class_="amedas-table-entries")
     data['10min'] = parse_table(tables[0])
     data['1hour'] = parse_table(tables[1])
 
-    print(data)
+    return data
 
 def parse_table(table):
     rows = []
@@ -45,6 +50,6 @@ def parse_table(table):
     return rows
 
 if __name__ == '__main__':
-    parse('')
+    print(parse('9/46/86411'))
 
 
