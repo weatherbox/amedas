@@ -84,7 +84,6 @@ class AmedasGL {
     }
 
     _initMapEvent (){
-        this._popup = new mapboxgl.Popup({ closeButton: false });
         this._moving = false;
         this._zooming = false;
 
@@ -103,6 +102,7 @@ class AmedasGL {
         if (this._layer){
             var features = this._layer.queryFeatures(e.point);
             map.getCanvas().style.cursor = (features.length) ? 'crosshair' : '';
+            this._checkPopupOffset();
             
             if (!features.length) {
                 this._popup.remove();
@@ -116,10 +116,22 @@ class AmedasGL {
         }
     }
 
+    _checkPopupOffset (){
+        var offset = (this.map.getZoom() >= 7) ? -10 : -2;
+        if (offset != this._popupOffset){
+            if (this._popup) this._popup.remove();
+            this._popup = new mapboxgl.Popup({ closeButton: false, offset: [0, offset] });
+            this._popupOffset = offset;
+        }
+    }
+
     select (e){
         if (this._layer){
             var features = this._layer.queryFeatures(e.point);   
-            if (!features.length) return;
+            if (!features.length){
+                window.infoBar.hide();
+                return;
+            }
             
             var feature = features[0];
             var id = feature.properties.tid;
