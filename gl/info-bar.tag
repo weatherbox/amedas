@@ -9,7 +9,7 @@
 		<div class="ui divider" style="margin-bottom:10px"></div>
 
 		<div class="content">
-			{ content }
+			<amedas-point ref="amedas_point"></amedas-point>
 		</div>
 	</div>
 
@@ -51,19 +51,19 @@
 		showPoint (title, id){
 			this.title = title;
 			this.update();
-
 			if (!this._show) this.show();
+			this.refs.amedas_point.fetchAPI(id);
 		}
 	</script>
 
 	<style>
 		#sidebar {
-			width: 320px;
+			width: 375px;
 			padding:10px;
 			transition: transform .5s ease;
 		}
 		.close { position:absolute; top:5px; right:5px; display:none; }
-		.title h2 { font-weight:500; margin-top:8px; margin-left:8px; }
+		.title h2 { font-size: 1.5rem; font-weight:500; margin-top:8px; margin-left:8px; }
 		.content { margin-top:10px; }
 	</style>
 </info-bar>
