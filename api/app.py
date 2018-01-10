@@ -40,16 +40,20 @@ def parse(id):
     return data
 
 def parse_table(table):
+    windtrans = str.maketrans("東西南北", "EWSN")
+
     rows = []
     for row in table.find_all("tr"):
         tds = [td.text for td in row.find_all("td")]
         tds = [td if td != "---" else None for td in tds]
         if len(tds) > 0:
-           rows.append(tds[-7:]) 
+            if tds[-4]:
+                tds[-4] = tds[-4].translate(windtrans)
+            rows.append(tds[-7:]) 
 
     return rows
 
 if __name__ == '__main__':
-    print(parse('9/46/86411'))
+    print(parse('9/46/86467'))
 
 
