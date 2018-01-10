@@ -84,18 +84,29 @@ class AmedasGL {
     }
 
     _initMapEvent (){
-        this._popup = new mapboxgl.Popup({ closeButton: false });
         this._moving = false;
         this._zooming = false;
 
         var self = this;
-        this.map.on('mousemove', function (e){ self._hover(e); });
-        //map.on('click', this.select);
-        this.map.on('movestart', function (){ self._moving = true; });
-        this.map.on('moveend',   function (){ self._moving = false; });
-        this.map.on('zoomstart', function (){ self._zooming = true; });
-        this.map.on('zoomend',   function (){ self._zooming = false; });
+        if (this._isTouchDevice()){
+            this.map.on('mousemove', function (e){ self.select(e); });
+
+        }else{
+            this.map.on('click', function (e){ self.select(e); });
+            this.map.on('mousemove', function (e){ self._hover(e); });
+            this.map.on('movestart', function (){ self._moving = true; });
+            this.map.on('moveend',   function (){ self._moving = false; });
+            this.map.on('zoomstart', function (){ self._zooming = true; });
+            this.map.on('zoomend',   function (){ self._zooming = false; });
+        }
     }
+
+    _isTouchDevice() {
+        return (('ontouchstart' in window)
+            || (navigator.MaxTouchPoints > 0)
+            || (navigator.msMaxTouchPoints > 0));
+    }
+
 
     _hover (e){
         if (this._moving || this._zooming) return false;
@@ -103,6 +114,7 @@ class AmedasGL {
         if (this._layer){
             var features = this._layer.queryFeatures(e.point);
             map.getCanvas().style.cursor = (features.length) ? 'crosshair' : '';
+            this._checkPopupOffset();
             
             if (!features.length) {
                 this._popup.remove();
@@ -110,10 +122,52 @@ class AmedasGL {
             }
 
             var feature = features[0];
+            var text = feature.properties.name + ' ' + this._layer.featureText(feature);
             this._popup.setLngLat(feature.geometry.coordinates)
-                .setText(this._layer.featureText(feature))
+                .setText(text)
                 .addTo(this.map);
         }
+    }
+
+    _checkPopupOffset (){
+        var offset = (this.map.getZoom() >= 7) ? -10 : -2;
+        if (offset != this._popupOffset){
+            if (this._popup) this._popup.remove();
+            this._popup = new mapboxgl.Popup({ closeButton: false, offset: [0, offset] });
+            this._popupOffset = offset;
+        }
+    }
+
+    select (e){
+        if (this._layer){
+            var features = this._layer.queryFeatures(e.point);   
+            if (!features.length){
+                window.infoBar.hide();
+                return;
+            }
+            
+            var feature = features[0];
+            var props = feature.properties;
+            var value = this._layer.featureText(feature);
+
+            this._selectPopup(feature.geometry.coordinates, props.name);
+
+            console.log(props.name, props.tid);
+            window.infoBar.showPoint(props.name, props.tid, value, this.onclose.bind(this));
+        }
+    }
+
+    _selectPopup (lnglat, text){
+        if (this._sPopup) this._sPopup.remove();
+        var offset = (this.map.getZoom() >= 7) ? -10 : -2;
+        this._sPopup = new mapboxgl.Popup({ closeButton: false, offset: [0, offset] });
+        this._sPopup.setLngLat(lnglat)
+            .setText(text)
+            .addTo(this.map);
+    }
+
+    onclose (){
+        if (this._sPopup) this._sPopup.remove();
     }
 }
 

@@ -17,6 +17,8 @@
 	<map-time></map-time>
 	<map-type></map-type>
 
+	<info-bar></info-bar>
+
     <script src='//api.tiles.mapbox.com/mapbox-gl-js/v0.42.2/mapbox-gl.js'></script>
 	<script src="//code.jquery.com/jquery-3.1.1.min.js"></script>
 	<script src="//cdn.jsdelivr.net/semantic-ui/2.2.10/semantic.min.js"></script>
@@ -33,12 +35,16 @@
 	<!-- riot -->
 	<script type="riot/tag" src="map-type.tag"></script>
 	<script type="riot/tag" src="map-time.tag"></script>
+	<script type="riot/tag" src="info-bar.tag"></script>
+	<script type="riot/tag" src="amedas-point.tag"></script>
 	<script src="https://cdn.jsdelivr.net/npm/riot@3.7/riot+compiler.min.js"></script>
 	<script>
 		riot.compile(function() {
 			riot.mount('map-type');
 			var items = riot.mount('map-time');
 			window.mapTime = items[0];
+			var items = riot.mount('info-bar');
+			window.infoBar = items[0];
 		});
 	</script>
 

@@ -48,6 +48,7 @@ def get_time(html):
 def scrape_amedas_table(point_table):
     return {
         'id':         get_id(point_table),
+        'tid':        get_tid(point_table),
         'name':       get_name(point_table),
         'temp':       get_temp(point_table),
         'rain':       get_rain(point_table),
@@ -59,6 +60,10 @@ def scrape_amedas_table(point_table):
 
 def get_id(point_table):
     id_match = re.search(r'<a href="/amedas/\d+/\d+/(\d+).html">', point_table)
+    return id_match.group(1)
+
+def get_tid(point_table):
+    id_match = re.search(r'<a href="/amedas/(\d+/\d+/\d+).html">', point_table)
     return id_match.group(1)
 
 def get_name(point_table):
