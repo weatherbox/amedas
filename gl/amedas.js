@@ -88,13 +88,25 @@ class AmedasGL {
         this._zooming = false;
 
         var self = this;
-        this.map.on('click', function (e){ self.select(e); });
-        this.map.on('mousemove', function (e){ self._hover(e); });
-        this.map.on('movestart', function (){ self._moving = true; });
-        this.map.on('moveend',   function (){ self._moving = false; });
-        this.map.on('zoomstart', function (){ self._zooming = true; });
-        this.map.on('zoomend',   function (){ self._zooming = false; });
+        if (this._isTouchDevice()){
+            this.map.on('mousemove', function (e){ self.select(e); });
+
+        }else{
+            this.map.on('click', function (e){ self.select(e); });
+            this.map.on('mousemove', function (e){ self._hover(e); });
+            this.map.on('movestart', function (){ self._moving = true; });
+            this.map.on('moveend',   function (){ self._moving = false; });
+            this.map.on('zoomstart', function (){ self._zooming = true; });
+            this.map.on('zoomend',   function (){ self._zooming = false; });
+        }
     }
+
+    _isTouchDevice() {
+        return (('ontouchstart' in window)
+            || (navigator.MaxTouchPoints > 0)
+            || (navigator.msMaxTouchPoints > 0));
+    }
+
 
     _hover (e){
         if (this._moving || this._zooming) return false;
