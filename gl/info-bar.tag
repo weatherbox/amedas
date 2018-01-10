@@ -56,8 +56,11 @@
 				transform: (this.mobile) ?
 					'translate3d(0,100%,0)' : // bottom
 					'translate3d(100%,0,0)' // right
-			}).one('transitionend', function (){ $(this).removeClass("visible");
+			}).one('transitionend', function (){
+				$(this).removeClass("visible");
 			});
+
+			if (this.onclose) this.onclose();
 		}
 		
 		showHeader (){
@@ -67,10 +70,11 @@
 			}).addClass("visible");
 		}
 
-		showPoint (title, id, value){
+		showPoint (title, id, value, onclose){
 			this.title = title;
 			this.subTitle = value;
 			this.id = id;
+			this.onclose = onclose;
 			this.update();
 
 			if (this.mobile){

@@ -138,9 +138,24 @@ class AmedasGL {
             var props = feature.properties;
             var value = this._layer.featureText(feature);
 
+            this._selectPopup(feature.geometry.coordinates, props.name);
+
             console.log(props.name, props.tid);
-            window.infoBar.showPoint(props.name, props.tid, value);
+            window.infoBar.showPoint(props.name, props.tid, value, this.onclose.bind(this));
         }
+    }
+
+    _selectPopup (lnglat, text){
+        if (this._sPopup) this._sPopup.remove();
+        var offset = (this.map.getZoom() >= 7) ? -10 : -2;
+        this._sPopup = new mapboxgl.Popup({ closeButton: false, offset: [0, offset] });
+        this._sPopup.setLngLat(lnglat)
+            .setText(text)
+            .addTo(this.map);
+    }
+
+    onclose (){
+        if (this._sPopup) this._sPopup.remove();
     }
 }
 
