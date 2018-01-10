@@ -11,12 +11,12 @@
 				<thead> 
 					<tr> 
 						<th>時刻</th> 
-						<th>気温 <div>℃</div></th> 
-						<th>降水 <div>mm</div></th> 
+						<th>気温<br/><div>℃</div></th> 
+						<th>降水<br/><div>mm</div></th> 
 						<th>風向</th> 
-						<th>風速 <div>m/s</div></th> 
-						<th>日照 <div>min</div></th> 
-						<th>積雪 <div>cm</div></th> 
+						<th>風速<br/><div>m/s</div></th> 
+						<th>日照<br/><div>min</div></th> 
+						<th>積雪<br/><div>cm</div></th> 
 					</tr> 
 				</thead>
 				<tbody>
