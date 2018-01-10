@@ -161,7 +161,7 @@ class AmedasGLWind {
     featureText (feature){
         var prop = feature.properties;
         var dir = this._dirText(prop.wind_dir);
-		return prop.name + ' ' + dir + ' ' + prop.speedf + 'm/s'
+		return dir + ' ' + prop.speedf + 'm/s';
     }
     _dirText (dir){
         if (dir == 'calm'){

@@ -7,7 +7,7 @@
 		</div>
 	
 		<div class="dimmer-box">	
-			<table class="ui celled table">
+			<table class="ui celled table unstackable">
 				<thead> 
 					<tr> 
 						<th>時刻</th> 
@@ -115,7 +115,7 @@
 		}
 		table.ui.table tbody {
 			overflow-y: scroll;
-			height: calc(100vh - 150px);
+			height: calc(100vh - 140px);
 		}
 		tr.split th {
 			text-align: center;

@@ -110,8 +110,9 @@ class AmedasGL {
             }
 
             var feature = features[0];
+            var text = feature.properties.name + ' ' + this._layer.featureText(feature);
             this._popup.setLngLat(feature.geometry.coordinates)
-                .setText(this._layer.featureText(feature))
+                .setText(text)
                 .addTo(this.map);
         }
     }
@@ -134,9 +135,11 @@ class AmedasGL {
             }
             
             var feature = features[0];
-            var id = feature.properties.tid;
-            console.log(feature.properties.name, id);
-            window.infoBar.showPoint(feature.properties.name, id);
+            var props = feature.properties;
+            var value = this._layer.featureText(feature);
+
+            console.log(props.name, props.tid);
+            window.infoBar.showPoint(props.name, props.tid, value);
         }
     }
 }

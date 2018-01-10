@@ -99,7 +99,7 @@ class AmedasGLSun {
 		return this.map.queryRenderedFeatures(point, { layers: ['sun-circle'] });
     }
     featureText (feature){
-		return feature.properties.name + ' ' + feature.properties.sunlight + 'min'
+		return feature.properties.sunlight + 'min';
     }
 }
 

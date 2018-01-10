@@ -144,7 +144,7 @@ class AmedasGLRain {
 		return this.map.queryRenderedFeatures(point, { layers: ['rain-circle1', 'rain-circle0'] });
     }
     featureText (feature){
-		return feature.properties.name + ' ' + feature.properties.rainf + 'mm'
+		return  feature.properties.rainf + 'mm';
     }
 }
 

@@ -112,6 +112,6 @@ class AmedasGLTemp {
 		return this.map.queryRenderedFeatures(point, { layers: ['temp-circle'] });
     }
     featureText (feature){
-		return feature.properties.name + ' ' + feature.properties.tempf + '℃'
+		return feature.properties.tempf + '℃';
     }
 }

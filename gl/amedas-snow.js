@@ -138,7 +138,7 @@ class AmedasGLSnow {
 		return this.map.queryRenderedFeatures(point, { layers: ['snow-circle1', 'snow-circle0'] });
     }
     featureText (feature){
-		return feature.properties.name + ' ' + feature.properties.snow + 'cm'
+		return feature.properties.snow + 'cm';
     }
 }
 
