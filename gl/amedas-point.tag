@@ -32,11 +32,10 @@
 						<td>{ d[5] || '--' }</td>
 						<td>{ d[6] || '--' }</td>
 					</tr>
-				</tbody>
-				<tbody>
-					<tr class="split">
+					<tr class="split border-top">
 						<th colspan="7">1時間ごと</th>
 					</tr>
+
 					<tr each={ d in data60 }>
 						<td>{ d[0] }</td>
 						<td>{ d[1] || '--' }</td>
@@ -95,7 +94,7 @@
 	<style>
 		table.ui.table thead th {
 			padding: 4px 2px;
-			width: 40px;
+			width: 50px;
 			text-align: center;
 			font-weight: 500;
 		}
@@ -107,11 +106,24 @@
 		table.ui.table tbody td {
 			padding: 2px;
 			text-align: center;
+			width: 50px;
+			font-size: 13px;
+			color: rgba(0,0,0,.7);
+		}
+		thead, tbody {
+			display: block;
+		}
+		table.ui.table tbody {
+			overflow-y: scroll;
+			height: calc(100vh - 150px);
 		}
 		tr.split th {
 			text-align: center;
 			font-weight: 500;
 			background: #F9FAFB;
+		}
+		tr.border-top th {
+			border-top: 1px solid rgba(34,36,38,.1);
 		}
 
 		.dimmer-box {
