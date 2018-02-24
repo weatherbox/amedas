@@ -51,6 +51,7 @@
 		}
 
 		hide (){
+			if (!this._show) return;
 			this._show = false;
 			this.$sidebar.css({
 				transform: (this.mobile) ?
