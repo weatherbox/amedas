@@ -4,11 +4,17 @@ import codecs
 
 
 def main(dir, csvfile):
-    files = os.listdir(dir)
+    ids = {}
+    with codecs.open('../../point/ame_master.csv', 'r', 'utf-8') as f:
+        reader = csv.reader(f, delimiter=',')
+        next(reader)
+        for row in reader:
+            ids[row[3]] = row[1]
 
+    files = os.listdir(dir)
     points = []
     for file in files[:1]:
-        dates, data = parsecsv(dir, file)
+        dates, data = parsecsv(dir, file, ids)
         points.extend(data)
 
     with open(csvfile, 'w') as f:
@@ -16,7 +22,7 @@ def main(dir, csvfile):
         writer.writerows(points)
 
 
-def parsecsv(dir, file):
+def parsecsv(dir, file, ids):
     with codecs.open(dir + '/' + file, 'r', 'shift-jis') as f:
         reader = csv.reader(f, delimiter=',')
         next(reader)
@@ -26,12 +32,13 @@ def parsecsv(dir, file):
         columns = list(map(list, zip(*rows))) # transpose
 
         dates = columns[0]
-        del dates[1:3]
+        del dates[1]
 
         points = []
         for column in columns:
             if column[1] == '降水量(mm)' and column[2] == '' and column[3] != '':
                 del column[1:3]
+                column.insert(0, ids[column[0]])
                 points.append(column)
 
         return dates, points
