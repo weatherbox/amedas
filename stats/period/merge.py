@@ -19,6 +19,7 @@ def main(dir, csvfile):
 
     with open(csvfile, 'w') as f:
         writer = csv.writer(f, lineterminator='\n')
+        writer.writerow(dates)
         writer.writerows(points)
 
 
