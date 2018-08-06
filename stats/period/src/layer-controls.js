@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import {layerControl} from './style';
 
 export const HEXAGON_CONTROLS = {
   showHexagon: {

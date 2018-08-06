@@ -8,9 +8,9 @@ import {
 } from './layer-controls';
 import Charts from './charts';
 import {tooltipStyle} from './style';
-import taxiData from '../../../data/taxi';
+import taxiData from './taxi-data';
 
-const MAPBOX_STYLE = 'mapbox://styles/mapbox/dark-v9';
+const MAPBOX_STYLE = 'mapbox://styles/tattii/cj1bob6hw003t2rr5s2svi3iq';
 // Set your mapbox token here
 const MAPBOX_TOKEN = process.env.MapboxAccessToken; // eslint-disable-line
 
@@ -146,17 +146,13 @@ export default class App extends Component {
           }}>
             <div>{JSON.stringify(this.state.hoveredObject)}</div>
           </div>}
-        {this.props.noControls ? null : <LayerControls
-          settings={this.state.settings}
-          propTypes={HEXAGON_CONTROLS}
-          onChange={settings => this._updateLayerSettings(settings)}
-        />}
         <MapGL
           {...this.state.viewport}
           mapStyle={MAPBOX_STYLE}
           onViewportChange={viewport => {
             this._onViewportChange(viewport);
           }}
+          attributionControl={false}
           mapboxApiAccessToken={MAPBOX_TOKEN}>
           <DeckGLOverlay
             viewport={this.state.viewport}
