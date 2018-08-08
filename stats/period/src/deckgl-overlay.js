@@ -1,30 +1,102 @@
+/* global window */
 import React, {Component} from 'react';
-import DeckGL, {ScatterplotLayer, HexagonLayer} from 'deck.gl';
-
-const PICKUP_COLOR = [0, 128, 255];
-const DROPOFF_COLOR = [255, 0, 128];
-
-const HEATMAP_COLORS = [
-  [213, 62, 79],
-  [252, 141, 89],
-  [254, 224, 139],
-  [230, 245, 152],
-  [153, 213, 148],
-  [50, 136, 189]
-].reverse();
+import DeckGL from 'deck.gl';
+import GridPointLayer from './grid-point-layer.js';
 
 const LIGHT_SETTINGS = {
-  lightsPosition: [-73.8, 40.5, 8000, -74.2, 40.9, 8000],
+  lightsPosition: [150, 20.5, 8000, 120, 50, 8000],
   ambientRatio: 0.4,
-  diffuseRatio: 0.6,
+  diffuseRatio: 0.4,
   specularRatio: 0.2,
   lightsStrength: [0.8, 0.0, 0.8, 0.0],
   numberOfLights: 2
 };
 
-const elevationRange = [0, 1000];
+const colorRange = [
+  [1, 152, 189],
+  [73, 227, 206],
+  [216, 254, 181],
+  [254, 237, 177],
+  [254, 173, 84],
+  [209, 55, 78]
+];
+
+const elevationScale = {min: 1, max: 50};
+
+const defaultProps = {
+  radius: 1000,
+  upperPercentile: 100,
+  coverage: 1
+};
 
 export default class DeckGLOverlay extends Component {
+
+  static get defaultColorRange() {
+    return colorRange;
+  }
+
+  static get defaultViewport() {
+    return {
+      longitude: 135,
+      latitude: 35,
+      zoom: 5.2,
+      minZoom: 5,
+      maxZoom: 15,
+      pitch: 40.5,
+      bearing: -27.396674584323023
+    };
+  }
+
+  constructor(props) {
+    super(props);
+    this.startAnimationTimer = null;
+    this.intervalTimer = null;
+    this.state = {
+      elevationScale: elevationScale.min
+    };
+
+    this._startAnimate = this._startAnimate.bind(this);
+    this._animateHeight = this._animateHeight.bind(this);
+
+  }
+
+  componentDidMount() {
+    this._animate();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.data.length !== this.props.data.length) {
+      this._animate();
+    }
+  }
+
+  componentWillUnmount() {
+    this._stopAnimate();
+  }
+
+  _animate() {
+    this._stopAnimate();
+
+    // wait 1.5 secs to start animation so that all data are loaded
+    this.startAnimationTimer = window.setTimeout(this._startAnimate, 1500);
+  }
+
+  _startAnimate() {
+    this.intervalTimer = window.setInterval(this._animateHeight, 20);
+  }
+
+  _stopAnimate() {
+    window.clearTimeout(this.startAnimationTimer);
+    window.clearTimeout(this.intervalTimer);
+  }
+
+  _animateHeight() {
+    if (this.state.elevationScale === elevationScale.max) {
+      this._stopAnimate();
+    } else {
+      this.setState({elevationScale: this.state.elevationScale + 1});
+    }
+  }
 
   _initialize(gl) {
     gl.enable(gl.DEPTH_TEST);
@@ -32,46 +104,37 @@ export default class DeckGLOverlay extends Component {
   }
 
   render() {
-    if (!this.props.data) {
+    const {viewport, data, radius, coverage, upperPercentile, max} = this.props;
+
+    if (!data) {
       return null;
     }
 
-    const filteredData = this.props.hour === null ? this.props.data :
-      this.props.data.filter(d => d.hour === this.props.hour);
-
     const layers = [
-      !this.props.showHexagon ? new ScatterplotLayer({
-        id: 'scatterplot',
-        getPosition: d => d.position,
-        getColor: d => d.pickup ? PICKUP_COLOR : DROPOFF_COLOR,
-        getRadius: d => 5,
-        opacity: 0.5,
-        pickable: true,
-        radiusMinPixels: 0.25,
-        radiusMaxPixels: 30,
-        ...this.props,
-        data: filteredData
-      }) : null,
-      this.props.showHexagon ? new HexagonLayer({
+      new GridPointLayer({
         id: 'heatmap',
-        colorRange: HEATMAP_COLORS,
-        elevationRange,
-        elevationScale: 5,
+        cellSize: 4000,
+        colorRange,
+        coverage,
+        data,
+        elevationRange: [0, 3000],
+        elevationScale: this.state.elevationScale,
+        elevationDomain: [0, max],
         extruded: true,
-        getPosition: d => d.position,
+        getPosition: d => d,
         lightSettings: LIGHT_SETTINGS,
+        onHover: this.props.onHover,
         opacity: 1,
-        pickable: true,
-        ...this.props,
-        data: filteredData
-      }) : null
+        pickable: Boolean(this.props.onHover),
+        radius,
+        upperPercentile,
+        max
+      })
     ];
 
-    return (<DeckGL
-      {...this.props.viewport}
-      layers={layers}
-      onWebGLInitialized={this._initialize}
-    />);
+    return <DeckGL {...viewport} layers={layers} onWebGLInitialized={this._initialize} />;
   }
 }
 
+DeckGLOverlay.displayName = 'DeckGLOverlay';
+DeckGLOverlay.defaultProps = defaultProps;
